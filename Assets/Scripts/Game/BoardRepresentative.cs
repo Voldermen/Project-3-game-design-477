@@ -1,0 +1,112 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BoardRepresentative : MonoBehaviour
+{
+    [SerializeField] private TileRepresentative tilePrefab;
+    [SerializeField] private BoardUnitRepresentative unitPrefab;
+    [SerializeField] private Transform tileRoot;
+    [SerializeField] private Transform unitRoot;
+    [SerializeField] private float tileSpacing = 1f;
+
+    private TileRepresentative[,] tileRepresentatives;
+    private readonly Dictionary<int, BoardUnitRepresentative> unitRepresentativesById = new();
+
+    public void Render(BoardState boardState)
+    {
+        EnsureTiles(boardState);
+        RenderTiles(boardState);
+        RenderUnits(boardState);
+    }
+
+    private void EnsureTiles(BoardState boardState)
+    {
+        if (tileRepresentatives != null &&
+            tileRepresentatives.GetLength(0) == boardState.Width &&
+            tileRepresentatives.GetLength(1) == boardState.Height)
+        {
+            return;
+        }
+
+        ClearChildren(tileRoot);
+
+        tileRepresentatives = new TileRepresentative[boardState.Width, boardState.Height];
+
+        for (int x = 0; x < boardState.Width; x++)
+        {
+            for (int y = 0; y < boardState.Height; y++)
+            {
+                TileRepresentative tile = Instantiate(tilePrefab, tileRoot);
+                tile.transform.localPosition = GridToWorld(x, y);
+                tile.Initialize(x, y, this);
+                tileRepresentatives[x, y] = tile;
+            }
+        }
+    }
+
+    private void RenderTiles(BoardState boardState)
+    {
+        for (int x = 0; x < boardState.Width; x++)
+        {
+            for (int y = 0; y < boardState.Height; y++)
+            {
+                tileRepresentatives[x, y].Render(boardState.Tiles[x, y]);
+            }
+        }
+    }
+
+    private void RenderUnits(BoardState boardState)
+    {
+        List<int> idsToRemove = new();
+
+        foreach (var pair in unitRepresentativesById)
+        {
+            if (!boardState.UnitsById.ContainsKey(pair.Key))
+            {
+                idsToRemove.Add(pair.Key);
+            }
+        }
+
+        for (int i = 0; i < idsToRemove.Count; i++)
+        {
+            int unitId = idsToRemove[i];
+            Destroy(unitRepresentativesById[unitId].gameObject);
+            unitRepresentativesById.Remove(unitId);
+        }
+
+        foreach (var pair in boardState.UnitsById)
+        {
+            BoardUnitState unitState = pair.Value;
+
+            if (!unitRepresentativesById.TryGetValue(unitState.UnitId, out BoardUnitRepresentative unitRep))
+            {
+                unitRep = Instantiate(unitPrefab, unitRoot);
+                unitRepresentativesById[unitState.UnitId] = unitRep;
+            }
+
+            unitRep.Render(unitState);
+            unitRep.transform.localPosition = GridToWorld(unitState.Position.x, unitState.Position.y);
+        }
+    }
+
+    public Vector3 GridToWorld(int x, int y)
+    {
+        return new Vector3(x * tileSpacing, 0f, y * tileSpacing);
+    }
+
+    public void OnTileClicked(TileRepresentative tile)
+    {
+    }
+
+    public void OnTileHovered(TileRepresentative tile)
+    {
+    }
+
+    private void ClearChildren(Transform root)
+    {
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            Destroy(root.GetChild(i).gameObject);
+        }
+    }
+}
