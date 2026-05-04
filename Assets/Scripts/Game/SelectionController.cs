@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// This is the main class that the player interacts with all the game logic through
-
 public class SelectionController : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
@@ -23,9 +21,27 @@ public class SelectionController : MonoBehaviour
         SelectedUnitId = unitId;
     }
 
-    public void SelectCard(CardDefinition card)
+    public bool TryBeginCard(CardDefinition card)
     {
+        BoardState boardState = gameManager.GetWorkingBoardState();
+
+        if (boardState == null) return false;
+        if (!targetingValidator.CanBeginCard(card, boardState, SelectedUnitId)) return false;
+
+        if (card.TargetType == CardTargetType.None)
+        {
+            bool played = gameManager.TryPlayCard(card, SelectedUnitId, Vector2Int.zero);
+
+            if (played)
+            {
+                SelectedCard = null;
+            }
+
+            return played;
+        }
+
         SelectedCard = card;
+        return true;
     }
 
     public void ClearSelection()
@@ -42,6 +58,13 @@ public class SelectionController : MonoBehaviour
 
     public void ClickTile(int x, int y)
     {
+        Debug.Log($"Clicked tile {x}, {y} during phase {gameManager.CurrentPhase}");
+        if (gameManager.CurrentPhase == TurnPhase.PlayerPlacement)
+        {
+            gameManager.TryPlaceFriendlyUnit(x, y);
+            return;
+        }
+
         BoardState boardState = gameManager.GetWorkingBoardState();
 
         if (boardState == null) return;
@@ -68,12 +91,6 @@ public class SelectionController : MonoBehaviour
         if (clickedUnit != null && clickedUnit.Team == UnitTeam.Friendly)
         {
             SelectUnit(clickedUnit.UnitId);
-            return;
-        }
-
-        if (SelectedUnitId != -1)
-        {
-            gameManager.TryMoveUnit(SelectedUnitId, x, y);
         }
     }
 }

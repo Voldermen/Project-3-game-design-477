@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dabd9c9bb5ae3f43bab1343d9e824b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardUnitRepresentative
+  modelRoot: {fileID: 1374105008460561905}

@@ -3,6 +3,7 @@
 public enum TurnPhase
 {
     Setup,
+    PlayerPlacement,
     TimelineSelection,
     PlayerTurn,
     EnemyResolution,

@@ -46,6 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5195cb0f2f9360742ba1584075c0a1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileRepresentative
+  tileRenderer: {fileID: 1943691735142721795}
+  normalMaterial: {fileID: -3661639628750336703, guid: 7e0223e1d3e1733499accfa5ebffb67e, type: 3}
+  hoveredMaterial: {fileID: 5629084884208175553, guid: 426a2785f8a940049aac2c246661cf09, type: 3}
+  hoverRaiseAmount: 0.15
 --- !u!65 &8931571948626457531
 BoxCollider:
   m_ObjectHideFlags: 0

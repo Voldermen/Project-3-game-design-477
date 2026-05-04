@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c78d5d3186a8d024fbd0a876c1e1b408, type: 3}
+  m_Name: ChaserEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  UnitDefinitionId: enemy_basic
+  DisplayName: Chaser
+  Team: 1
+  IsBase: 0
+  MaxHealth: 26
+  ModelPrefab: {fileID: 919132149155446097, guid: 26c9d7e357f526340a7b986a52899fbd, type: 3}
+  EnemyBehavior: {fileID: 11400000, guid: 766a6b458250a814b8205aed8d5a75b5, type: 2}

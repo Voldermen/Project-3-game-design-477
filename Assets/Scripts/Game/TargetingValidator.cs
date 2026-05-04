@@ -2,16 +2,38 @@ using UnityEngine;
 
 public class TargetingValidator
 {
-    public bool CanTarget(CardDefinition card, BoardState boardState, int actingUnitId, Vector2Int targetPosition)
+    public bool CanBeginCard(CardDefinition card, BoardState boardState, int actingUnitId)
     {
-        if (card == null || boardState == null)
+        if (card == null || boardState == null) return false;
+
+        if (card.PlayType == CardPlayType.Global)
         {
-            return false;
+            return boardState.EnergyState.CanSpend(card.Cost);
         }
 
-        if (!boardState.IsInsideBoard(targetPosition.x, targetPosition.y))
+        if (!boardState.EnergyState.CanSpend(card.Cost)) return false;
+        if (actingUnitId == -1) return false;
+        if (!boardState.UnitsById.TryGetValue(actingUnitId, out BoardUnitState actingUnit)) return false;
+        if (actingUnit.Team != card.RequiredActingUnitTeam) return false;
+
+        return true;
+    }
+
+    public bool CanTarget(CardDefinition card, BoardState boardState, int actingUnitId, Vector2Int targetPosition)
+    {
+        if (card == null || boardState == null) return false;
+        if (!boardState.IsInsideBoard(targetPosition.x, targetPosition.y)) return false;
+
+        if (card.PlayType == CardPlayType.Unit)
         {
-            return false;
+            if (!boardState.UnitsById.TryGetValue(actingUnitId, out BoardUnitState actingUnit)) return false;
+            if (actingUnit.Team != card.RequiredActingUnitTeam) return false;
+
+            if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit)
+            {
+                int distance = Mathf.Abs(actingUnit.Position.x - targetPosition.x) + Mathf.Abs(actingUnit.Position.y - targetPosition.y);
+                if (distance != 1) return false;
+            }
         }
 
         BoardUnitState targetUnit = boardState.GetUnitAtTile(targetPosition.x, targetPosition.y);

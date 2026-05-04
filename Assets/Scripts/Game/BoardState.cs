@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -11,6 +12,7 @@ public class BoardState
     public BoardTileState[,] Tiles;
     public Dictionary<int, BoardUnitState> UnitsById = new();
     public EnergyState EnergyState = new();
+    public List<EnemyIntentState> EnemyIntents = new List<EnemyIntentState>();
 
     public int Width => Tiles.GetLength(0);
     public int Height => Tiles.GetLength(1);
@@ -52,6 +54,13 @@ public class BoardState
             clone.UnitsById[pair.Key] = pair.Value.Clone();
         }
 
+        clone.EnemyIntents = new List<EnemyIntentState>();
+
+        for (int i = 0; i < EnemyIntents.Count; i++)
+        {
+            clone.EnemyIntents.Add(EnemyIntents[i].Clone());
+        }
+
         clone.EnergyState = EnergyState.Clone();
 
         return clone;
@@ -73,7 +82,8 @@ public class BoardState
         {
             BoardUnitState unit = pair.Value;
 
-            if (unit.Team == UnitTeam.Friendly && unit.Health > 0)
+
+            if (unit.Team == UnitTeam.Friendly && !unit.IsBase && unit.Health > 0)
             {
                 count++;
             }
@@ -84,6 +94,7 @@ public class BoardState
 
     public void RefreshEnergyFromFriendlyUnits()
     {
+        int count = GetPresentFriendlyUnitCount();
         EnergyState.SetEnergy(GetPresentFriendlyUnitCount());
     }
 
