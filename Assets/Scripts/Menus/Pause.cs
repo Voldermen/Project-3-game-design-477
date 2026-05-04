@@ -17,7 +17,7 @@ public class Pause : MonoBehaviour
         isPaused=true;
         Time.timeScale=0f;
         PauseUI.SetActive(true);
-        inputedActions.Instance.DisableInput();
+       
     }
 
     public void Resume()
@@ -30,8 +30,10 @@ public class Pause : MonoBehaviour
 
     public void Retry()
     {
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale=1f;
+        inputedActions.Instance.DisableInput();
         
     }
     public void Title()

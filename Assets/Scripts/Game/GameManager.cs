@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 using System.Collections;
+using  UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     private int nextUnitId;
 
     public TurnPhase CurrentPhase { get; private set; }
+    public GameOver gameOver;
 
     private void Start()
     {
@@ -612,15 +614,17 @@ public class GameManager : MonoBehaviour
     {
         CurrentPhase = TurnPhase.GameOver;
         Debug.Log("Victory");
+        SceneManager.LoadScene("Ending");
     }
 
     private void LoseMatch()
     {
         CurrentPhase = TurnPhase.GameOver;
         Debug.Log("Defeat");
+        gameOver.ShowGameOver();
     }
 
-    private void LogAllUnitHealth(BoardState state, string context)
+    private void LogAllUnitHealth(BoardState state, string context) // unit hp indicator 
     {
         Debug.Log($"--- {context} ---");
 
