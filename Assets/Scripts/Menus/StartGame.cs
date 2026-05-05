@@ -4,7 +4,7 @@ public class StartGame : MonoBehaviour
 {
   public void Startgame()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("BoardScene");
     }
     public void exit()
     {
