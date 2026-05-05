@@ -66,4 +66,16 @@ public class BoardMouseInput : MonoBehaviour
 
         return hit.collider.GetComponentInParent<TileRepresentative>();
     }
+
+    private void ClearHover()
+    {
+        if (hoveredTile == null)
+        {
+            return;
+        }
+
+        hoveredTile.SetHovered(false);
+        hoveredTile.ClearHover();
+        hoveredTile = null;
+    }
 }

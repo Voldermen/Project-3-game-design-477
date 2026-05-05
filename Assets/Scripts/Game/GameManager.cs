@@ -459,9 +459,16 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
+        TelegraphEnemyAttacks(workingBoardState);
+
         cardManager.DiscardCard(card);
-        if (energyWidget != null) energyWidget.Refresh(workingBoardState.EnergyState);
         boardRepresentative.Render(workingBoardState);
+
+        if (energyWidget != null)
+        {
+            energyWidget.Refresh(workingBoardState.EnergyState);
+        }
+
         return true;
     }
 

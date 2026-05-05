@@ -41,10 +41,20 @@ public class TileRepresentative : MonoBehaviour
         {
             tileRenderer.material = hovered ? hoveredMaterial : normalMaterial;
         }
+
+        if (hovered && boardRepresentative != null)
+        {
+            boardRepresentative.OnTileHovered(this);
+        }
     }
 
     public void Click()
     {
         boardRepresentative.OnTileClicked(this);
+    }
+
+    public void ClearHover()
+    {
+        boardRepresentative.ClearHoveredTile();
     }
 }

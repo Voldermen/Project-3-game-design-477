@@ -12,6 +12,10 @@ public class BoardRepresentative : MonoBehaviour
     [SerializeField] private UnitDatabase unitDatabase;
     [SerializeField] private DangerTileRepresentative dangerPrefab;
     [SerializeField] private Transform dangerRoot;
+    [SerializeField] private UnitHealthHoverWidget healthHoverWidget;
+    [SerializeField] private float healthHoverHeight = 1.5f;
+
+    private BoardState lastRenderedBoardState;
 
     private readonly List<DangerTileRepresentative> dangerTiles = new();
 
@@ -20,6 +24,8 @@ public class BoardRepresentative : MonoBehaviour
 
     public void Render(BoardState boardState)
     {
+        lastRenderedBoardState = boardState;
+
         EnsureTiles(boardState);
         RenderTiles(boardState);
         RenderUnits(boardState);
@@ -164,12 +170,36 @@ public class BoardRepresentative : MonoBehaviour
 
     public void OnTileHovered(TileRepresentative tile)
     {
-        if (selectionController == null)
+        if (selectionController != null)
+        {
+            selectionController.HoverTile(tile.X, tile.Y);
+        }
+
+        if (healthHoverWidget == null || lastRenderedBoardState == null)
         {
             return;
         }
 
-        selectionController.HoverTile(tile.X, tile.Y);
+        BoardUnitState unit = lastRenderedBoardState.GetUnitAtTile(tile.X, tile.Y);
+
+        if (unit == null)
+        {
+            healthHoverWidget.Hide();
+            return;
+        }
+
+        Vector3 localPos = GridToWorld(unit.Position.x, unit.Position.y) + Vector3.up * healthHoverHeight;
+        Vector3 worldPos = transform.TransformPoint(localPos);
+
+        healthHoverWidget.Show(unit, worldPos);
+    }
+
+    public void ClearHoveredTile()
+    {
+        if (healthHoverWidget != null)
+        {
+            healthHoverWidget.Hide();
+        }
     }
 
     private void ClearChildren(Transform root)

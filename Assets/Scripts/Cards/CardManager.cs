@@ -63,7 +63,20 @@ public class CardManager : MonoBehaviour
         {
             DrawPile.Add(startingDeck[i]);
         }
+        Shuffle(DrawPile);
         RefreshPileWidgets();
+    }
+
+    private void Shuffle(List<CardDefinition> pile)
+    {
+        for (int i = 0; i < pile.Count; i++)
+        {
+            int j = Random.Range(i, pile.Count);
+
+            CardDefinition temp = pile[i];
+            pile[i] = pile[j];
+            pile[j] = temp;
+        }
     }
 
     public void DrawHand(int count)
@@ -122,6 +135,7 @@ public class CardManager : MonoBehaviour
     {
         DrawPile.AddRange(DiscardPile);
         DiscardPile.Clear();
+        Shuffle(DrawPile);
         RefreshPileWidgets();
     }
 
@@ -148,7 +162,7 @@ public class CardManager : MonoBehaviour
             rect.localScale = Vector3.one;
             rect.localRotation = Quaternion.identity;
 
-            float spacing = 120f;
+            float spacing = 60f;
             float startX = -((Hand.Count - 1) * spacing * 0.5f);
 
             rect.anchoredPosition = new Vector2(startX + i * spacing, 0f);

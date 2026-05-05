@@ -8,6 +8,7 @@ public enum CardTargetType
 {
     None,
     Tile,
+    EmptyTile,
     Unit,
     FriendlyUnit,
     EnemyUnit
@@ -16,7 +17,8 @@ public enum CardTargetType
 public enum CardTargetPattern
 {
     Any,
-    CardinalAdjacentToActingUnit
+    CardinalAdjacentToActingUnit,
+    WithinRangeOfActingUnit
 }
 
 public enum CardEffectType

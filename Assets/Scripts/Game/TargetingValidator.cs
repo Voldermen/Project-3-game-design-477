@@ -21,18 +21,21 @@ public class TargetingValidator
 
     public bool CanTarget(CardDefinition card, BoardState boardState, int actingUnitId, Vector2Int targetPosition)
     {
-        if (card == null || boardState == null) return false;
-        if (!boardState.IsInsideBoard(targetPosition.x, targetPosition.y)) return false;
-
         if (card.PlayType == CardPlayType.Unit)
         {
             if (!boardState.UnitsById.TryGetValue(actingUnitId, out BoardUnitState actingUnit)) return false;
             if (actingUnit.Team != card.RequiredActingUnitTeam) return false;
 
-            if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit)
+            int distance = Mathf.Abs(actingUnit.Position.x - targetPosition.x) + Mathf.Abs(actingUnit.Position.y - targetPosition.y);
+
+            if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit && distance != 1)
             {
-                int distance = Mathf.Abs(actingUnit.Position.x - targetPosition.x) + Mathf.Abs(actingUnit.Position.y - targetPosition.y);
-                if (distance != 1) return false;
+                return false;
+            }
+
+            if (card.TargetPattern == CardTargetPattern.WithinRangeOfActingUnit && distance > card.TargetRange)
+            {
+                return false;
             }
         }
 
@@ -45,6 +48,9 @@ public class TargetingValidator
 
             case CardTargetType.Tile:
                 return true;
+
+            case CardTargetType.EmptyTile:
+                return targetUnit == null;
 
             case CardTargetType.Unit:
                 return targetUnit != null;

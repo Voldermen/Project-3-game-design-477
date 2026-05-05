@@ -11,4 +11,5 @@ public class CardDefinition : ScriptableObject
     public CardTargetType TargetType;
     public CardTargetPattern TargetPattern;
     public CardEffect CardEffect;
+    public int TargetRange = 0;
 }
