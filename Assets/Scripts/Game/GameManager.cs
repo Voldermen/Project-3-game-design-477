@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 using System.Collections;
 using  UnityEngine.SceneManagement;
 
@@ -270,6 +269,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        CommitWorkingBoardState();
         StartEnemyTurn();
     }
 
@@ -282,7 +282,18 @@ public class GameManager : MonoBehaviour
     {
         CurrentPhase = TurnPhase.EnemyResolution;
 
-        
+        Timeline enemyTimeline = GetRandomPlayableTimeline();
+
+        if (enemyTimeline == null)
+        {
+            yield break;
+        }
+
+        activeTimeline = enemyTimeline;
+        committedBoardState = activeTimeline.GetLatestState();
+        workingBoardState = committedBoardState.CloneForNextTurn();
+
+        boardRepresentative.Render(workingBoardState);
 
         LogAllUnitHealth(workingBoardState, "Start of Enemy Turn");
 
@@ -348,7 +359,7 @@ public class GameManager : MonoBehaviour
                 Vector2Int position = intent.TargetTiles[j];
                 BoardUnitState target = state.GetUnitAtTile(position.x, position.y);
 
-                if (target == null || target.Team != UnitTeam.Friendly)
+                if (target == null)
                 {
                     continue;
                 }
