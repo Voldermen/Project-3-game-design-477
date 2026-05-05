@@ -58,7 +58,6 @@ public class SelectionController : MonoBehaviour
 
     public void ClickTile(int x, int y)
     {
-        Debug.Log($"Clicked tile {x}, {y} during phase {gameManager.CurrentPhase}");
         if (gameManager.CurrentPhase == TurnPhase.PlayerPlacement)
         {
             gameManager.TryPlaceFriendlyUnit(x, y);

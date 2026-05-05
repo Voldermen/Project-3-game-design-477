@@ -7,6 +7,7 @@ public class Timeline
     public int CreatedOnTurn;
 
     private readonly List<BoardState> boardStates = new();
+    public int StateCount => boardStates.Count;
 
     // Timelines each have an ID (Held by the GameManager), and a CreatedOnTurn
     public Timeline(int timelineId, int createdOnTurn)
@@ -17,7 +18,7 @@ public class Timeline
 
     public void AddState(BoardState state)
     {
-        boardStates.Add(state);
+        boardStates.Add(state.Clone());
     }
 
     // Returns the rightmost state
@@ -34,6 +35,16 @@ public class Timeline
         int index = turn - CreatedOnTurn;
         if (index < 0 || index >= boardStates.Count) return null;
         
+        return boardStates[index];
+    }
+
+    public BoardState GetStateAtIndex(int index)
+    {
+        if (index < 0 || index >= boardStates.Count)
+        {
+            return null;
+        }
+
         return boardStates[index];
     }
 }

@@ -6,6 +6,7 @@ public class CardEffectContext
     public CardDefinition Card;
     public int ActingUnitId;
     public Vector2Int TargetPosition;
+    public GameManager GameManager;
 
     public BoardUnitState ActingUnit => BoardState.UnitsById.TryGetValue(ActingUnitId, out BoardUnitState unit) ? unit : null;
     public BoardUnitState TargetUnit => BoardState.GetUnitAtTile(TargetPosition.x, TargetPosition.y);

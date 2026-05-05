@@ -36,17 +36,13 @@ public class BoardRepresentative : MonoBehaviour
     {
         ClearDangerTiles();
 
-        Debug.Log($"Rendering danger tiles. Intent count: {state.EnemyIntents.Count}");
-
         if (dangerPrefab == null)
         {
-            Debug.LogError("Missing dangerPrefab.");
             return;
         }
 
         if (dangerRoot == null)
         {
-            Debug.LogError("Missing dangerRoot.");
             return;
         }
 
@@ -54,7 +50,6 @@ public class BoardRepresentative : MonoBehaviour
         {
             foreach (var tile in intent.TargetTiles)
             {
-                Debug.Log($"Spawning danger tile at {tile}");
 
                 DangerTileRepresentative danger = Instantiate(dangerPrefab, dangerRoot);
                 danger.transform.localPosition = GridToWorld(tile.x, tile.y);

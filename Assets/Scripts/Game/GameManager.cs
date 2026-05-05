@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UnitDefinition friendlyBaseDefinition;
     [SerializeField] private List<UnitDefinition> enemyDefinitions;
     [SerializeField] private UnitDatabase unitDatabase;
+    [SerializeField] private TimelineSelectionWidget timelineSelectionWidget;
 
     [SerializeField] private int boardWidth = 8;
     [SerializeField] private int boardHeight = 8;
@@ -31,6 +32,8 @@ public class GameManager : MonoBehaviour
     private Timeline activeTimeline;
     private BoardState committedBoardState;
     private BoardState workingBoardState;
+    private Dictionary<int, BoardState> workingStatesByTimelineId
+    = new Dictionary<int, BoardState>();
 
     private int nextTimelineId;
     private int nextUnitId;
@@ -165,6 +168,7 @@ public class GameManager : MonoBehaviour
         ResolveOpeningEnemyTurn(setupBoardState);
 
         Timeline timeline = new Timeline(nextTimelineId, 0);
+        nextTimelineId++;
         timeline.AddState(setupBoardState);
 
         timelines.Add(timeline);
@@ -184,7 +188,6 @@ public class GameManager : MonoBehaviour
     {
         CurrentPhase = TurnPhase.TimelineSelection;
 
-        committedBoardState = activeTimeline.GetLatestState();
         workingBoardState = null;
 
         cardManager.DrawHand(5);
@@ -194,13 +197,31 @@ public class GameManager : MonoBehaviour
             energyWidget.Hide();
         }
 
-        boardRepresentative.Render(committedBoardState);
+        if (committedBoardState != null)
+        {
+            boardRepresentative.Render(committedBoardState);
+        }
 
         if (timelines.Count == 1)
         {
             SelectTimelineForTurn(timelines[0].TimelineId);
             return;
         }
+
+        if (timelineSelectionWidget != null)
+        {
+            timelineSelectionWidget.Open(this);
+        }
+    }
+
+    private Timeline GetRandomPlayableTimeline()
+    {
+        if (timelines.Count == 0)
+        {
+            return null;
+        }
+
+        return timelines[Random.Range(0, timelines.Count)];
     }
 
     // Set the active timeline to the given timeLineId, and updates relevant fields
@@ -216,8 +237,10 @@ public class GameManager : MonoBehaviour
         committedBoardState = activeTimeline.GetLatestState();
         if (committedBoardState == null) return false;
 
-        workingBoardState = committedBoardState.CloneForNextTurn();
-        LogAllUnitHealth(workingBoardState, "Start of Player Turn");
+        BoardState clonedState = committedBoardState.CloneForNextTurn();
+
+        workingStatesByTimelineId[activeTimeline.TimelineId] = clonedState;
+        workingBoardState = clonedState;
         workingBoardState.RefreshEnergyFromFriendlyUnits();
         if (energyWidget != null) energyWidget.Show(workingBoardState.EnergyState);
 
@@ -259,6 +282,10 @@ public class GameManager : MonoBehaviour
     {
         CurrentPhase = TurnPhase.EnemyResolution;
 
+        
+
+        LogAllUnitHealth(workingBoardState, "Start of Enemy Turn");
+
         yield return new WaitForSeconds(enemyActionDelay);
 
         ExecuteTelegraphedEnemyAttacks(workingBoardState);
@@ -275,19 +302,6 @@ public class GameManager : MonoBehaviour
         boardRepresentative.Render(workingBoardState);
 
         yield return new WaitForSeconds(enemyActionDelay);
-
-        if (ShouldLose(workingBoardState))
-        {
-            LoseMatch();
-            yield break;
-        }
-
-        if (ShouldWin(workingBoardState))
-        {
-            CommitWorkingBoardState();
-            WinMatch();
-            yield break;
-        }
 
         CommitWorkingBoardState();
         StartPlayerTimelineSelection();
@@ -429,11 +443,25 @@ public class GameManager : MonoBehaviour
     // Adds the working board state to the timeline as a real state, and renders it
     private void CommitWorkingBoardState()
     {
-        activeTimeline.AddState(workingBoardState);
-        committedBoardState = workingBoardState;
-        workingBoardState = null;
+        if (workingBoardState == null)
+        {
+            return;
+        }
 
-        boardRepresentative.Render(committedBoardState);
+        Timeline timeline = GetTimeline(workingBoardState.TimelineId);
+
+        if (timeline == null)
+        {
+            Debug.LogError($"No timeline found for board state timeline id {workingBoardState.TimelineId}");
+            return;
+        }
+
+        timeline.AddState(workingBoardState);
+
+        Debug.Log(
+            $"Committed state turn={workingBoardState.TurnCount} " +
+            $"to timeline={workingBoardState.TimelineId}"
+        );
     }
 
     public BoardState GetWorkingBoardState()
@@ -453,7 +481,7 @@ public class GameManager : MonoBehaviour
 
         if (!workingBoardState.EnergyState.TrySpend(card.Cost)) return false;
 
-        bool resolved = cardResolver.ResolveCard(card, workingBoardState, actingUnitId, targetPosition);
+        bool resolved = cardResolver.ResolveCard(card, workingBoardState, actingUnitId, targetPosition, this);
 
         if (!resolved)
         {
@@ -554,6 +582,131 @@ public class GameManager : MonoBehaviour
         boardRepresentative.Render(workingBoardState);
     }
 
+    public bool SendUnitToTurn(int unitId, int targetTurn)
+    {
+        if (workingBoardState == null) return false;
+
+        if (!workingBoardState.UnitsById.TryGetValue(unitId, out BoardUnitState unit))
+        {
+            return false;
+        }
+
+        if (targetTurn < 0 || targetTurn >= workingBoardState.TurnCount)
+        {
+            return false;
+        }
+
+        BoardState targetState = activeTimeline.GetStateAtTurn(targetTurn);
+
+        if (targetState == null)
+        {
+            return false;
+        }
+
+        int newTimelineId = nextTimelineId;
+        nextTimelineId++;
+
+        BoardUnitState copiedUnit = unit.Clone();
+        copiedUnit.UnitId = nextUnitId++;
+        copiedUnit.Position = unit.Position;
+
+        BoardState branchedState = targetState.Clone();
+        branchedState.TimelineId = newTimelineId;
+
+        Vector2Int spawnPosition = copiedUnit.Position;
+
+        if (!branchedState.IsInsideBoard(spawnPosition.x, spawnPosition.y))
+        {
+            return false;
+        }
+
+        if (branchedState.GetUnitAtTile(spawnPosition.x, spawnPosition.y) != null)
+        {
+            spawnPosition = FindNearestEmptyTile(branchedState, spawnPosition);
+
+            if (spawnPosition.x < 0)
+            {
+                return false;
+            }
+        }
+
+        workingBoardState.RemoveUnit(unitId);
+        TelegraphEnemyAttacks(workingBoardState);
+
+        branchedState.AddUnit(copiedUnit, spawnPosition.x, spawnPosition.y);
+        TelegraphEnemyAttacks(branchedState);
+
+        Timeline newTimeline = new Timeline(newTimelineId, targetTurn);
+        newTimeline.AddState(branchedState);
+
+        timelines.Add(newTimeline);
+
+        DebugTimelines();
+
+        return true;
+    }
+
+    private Vector2Int FindNearestEmptyTile(BoardState state, Vector2Int origin)
+    {
+        if (state.IsInsideBoard(origin.x, origin.y) && state.GetUnitAtTile(origin.x, origin.y) == null)
+        {
+            return origin;
+        }
+
+        for (int radius = 1; radius <= Mathf.Max(state.Width, state.Height); radius++)
+        {
+            for (int x = origin.x - radius; x <= origin.x + radius; x++)
+            {
+                for (int y = origin.y - radius; y <= origin.y + radius; y++)
+                {
+                    if (!state.IsInsideBoard(x, y))
+                    {
+                        continue;
+                    }
+
+                    if (Mathf.Abs(origin.x - x) + Mathf.Abs(origin.y - y) > radius)
+                    {
+                        continue;
+                    }
+
+                    if (state.GetUnitAtTile(x, y) == null)
+                    {
+                        return new Vector2Int(x, y);
+                    }
+                }
+            }
+        }
+
+        return new Vector2Int(-1, -1);
+    }
+
+    public void DebugTimelines()
+    {
+        Debug.Log("===== TIMELINE DEBUG =====");
+
+        for (int i = 0; i < timelines.Count; i++)
+        {
+            Timeline timeline = timelines[i];
+
+            Debug.Log($"Timeline {timeline.TimelineId} | CreatedOnTurn={timeline.CreatedOnTurn} | States={timeline.StateCount}");
+
+            for (int j = 0; j < timeline.StateCount; j++)
+            {
+                BoardState state = timeline.GetStateAtIndex(j);
+
+                if (state == null)
+                {
+                    Debug.Log($"    StateIndex {j}: NULL");
+                    continue;
+                }
+
+                Debug.Log(
+                    $"    StateIndex {j} | Turn={state.TurnCount} | Timeline={state.TimelineId} | Units={state.UnitsById.Count} | Intents={state.EnemyIntents.Count}"
+                );
+            }
+        }
+    }
+
     // Finds the TimeLine of a given id
     public Timeline GetTimeline(int timelineId)
     {
@@ -642,6 +795,45 @@ public class GameManager : MonoBehaviour
             Debug.Log(
                 $"Unit {unit.UnitId} ({unit.UnitDefinitionId}) | Team={unit.Team} | HP={unit.Health}/{unit.MaxHealth}"
             );
+        }
+    }
+
+    // Helpers with timeline rendering
+    public BoardState GetTimelineState(int timelineId, int stateIndex)
+    {
+        Timeline timeline = GetTimeline(timelineId);
+
+        if (timeline == null)
+        {
+            return null;
+        }
+
+        return timeline.GetStateAtIndex(stateIndex);
+    }
+
+    public bool IsRightmostTimelineState(int timelineId, int stateIndex)
+    {
+        Timeline timeline = GetTimeline(timelineId);
+
+        if (timeline == null)
+        {
+            return false;
+        }
+
+        return stateIndex == timeline.StateCount - 1;
+    }
+
+    public void PreviewTimelineState(BoardState state)
+    {
+        Debug.Log($"GameManager preview state: turn={state.TurnCount}, timeline={state.TimelineId}, units={state.UnitsById.Count}");
+        boardRepresentative.Render(state.Clone());
+    }
+
+    public void RenderCommittedBoard()
+    {
+        if (committedBoardState != null)
+        {
+            boardRepresentative.Render(committedBoardState);
         }
     }
 }

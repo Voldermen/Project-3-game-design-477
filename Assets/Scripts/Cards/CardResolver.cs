@@ -2,16 +2,20 @@ using UnityEngine;
 
 public class CardResolver
 {
-    public bool ResolveCard(CardDefinition card, BoardState boardState, int actingUnitId, Vector2Int targetPosition)
+    public bool ResolveCard(CardDefinition card, BoardState boardState, int actingUnitId, Vector2Int targetPosition, GameManager gameManager)
     {
-        if (card == null || card.CardEffect == null || boardState == null) return false;
+        if (card == null || card.CardEffect == null || boardState == null)
+        {
+            return false;
+        }
 
         CardEffectContext context = new CardEffectContext
         {
             BoardState = boardState,
             Card = card,
             ActingUnitId = actingUnitId,
-            TargetPosition = targetPosition
+            TargetPosition = targetPosition,
+            GameManager = gameManager
         };
 
         return card.CardEffect.Resolve(context);
