@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb420afec6120541ade39a0d7763b57, type: 3}
   m_Name: Summon_Base_Unit_Effect
   m_EditorClassIdentifier: Assembly-CSharp::SummonBaseUnit
-  unitToSpawn: {fileID: 0}
+  unitToSpawn: {fileID: 11400000, guid: 01b42b21e668eb04785a8970d4c835de, type: 2}

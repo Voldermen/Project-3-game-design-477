@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
   m_Name: Diagonal Attack
   m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
-  CardId: 
-  DisplayName: 
-  Cost: 0
+  CardId: diagonal_attack
+  DisplayName: Diagonal Strike
+  Cost: 1
   PlayType: 0
   RequiredActingUnitTeam: 0
-  TargetType: 0
-  TargetPattern: 0
-  CardEffect: {fileID: 0}
-  TargetRange: 0
+  TargetType: 5
+  TargetPattern: 3
+  CardEffect: {fileID: 11400000, guid: ed81624fa81c1334f9c80a68464b39dd, type: 2}
+  TargetRange: 1

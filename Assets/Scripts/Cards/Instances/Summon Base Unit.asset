@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
   m_Name: Summon Base Unit
   m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
-  CardId: 
-  DisplayName: 
-  Cost: 0
-  PlayType: 0
+  CardId: Summon_Base
+  DisplayName: Summon Base Unit
+  Cost: 2
+  PlayType: 1
   RequiredActingUnitTeam: 0
-  TargetType: 0
+  TargetType: 2
   TargetPattern: 0
-  CardEffect: {fileID: 0}
+  CardEffect: {fileID: 11400000, guid: 57bc1afd33fee404ebbebd5977edcc85, type: 2}
   TargetRange: 0
