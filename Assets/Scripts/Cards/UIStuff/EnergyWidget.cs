@@ -32,6 +32,6 @@ public class EnergyWidget : MonoBehaviour
             energyText.text = "0 / 0";
             return;
         }
-        energyText.text = $"{energyState.CurrentEnergy} / {energyState.MaxEnergy}";
+        energyText.text = "Energy: " + $"{energyState.CurrentEnergy}/{energyState.MaxEnergy}";
     }
 }
