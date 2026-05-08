@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
+  m_Name: Summon Base Unit
+  m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
+  CardId: 
+  DisplayName: 
+  Cost: 0
+  PlayType: 0
+  RequiredActingUnitTeam: 0
+  TargetType: 0
+  TargetPattern: 0
+  CardEffect: {fileID: 0}
+  TargetRange: 0
