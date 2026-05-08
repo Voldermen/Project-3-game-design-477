@@ -44,6 +44,11 @@ public class TargetingValidator
             {
                 return false;
             }
+
+            if (card.TargetPattern== CardTargetPattern.AllAroundActingUnit && !( distanceX <= card.TargetRange && distanceY <= card.TargetRange && distance> 0)) // allows for a card to be played anywhere around the player units.
+            {
+                return false;
+            }
         }
 
         BoardUnitState targetUnit = boardState.GetUnitAtTile(targetPosition.x, targetPosition.y);

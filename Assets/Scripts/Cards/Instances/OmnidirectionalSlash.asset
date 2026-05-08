@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
-  m_Name: Summon Base Unit
+  m_Name: OmnidirectionalSlash
   m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
-  CardId: Summon_unit
-  DisplayName: Summon Unit
-  Cost: 2
-  PlayType: 1
+  CardId: omnidirectional_slash
+  DisplayName: 'Omnidirectional Slash '
+  Cost: 1
+  PlayType: 0
   RequiredActingUnitTeam: 0
-  TargetType: 2
-  TargetPattern: 0
-  CardEffect: {fileID: 11400000, guid: 57bc1afd33fee404ebbebd5977edcc85, type: 2}
-  TargetRange: 0
+  TargetType: 5
+  TargetPattern: 4
+  CardEffect: {fileID: 11400000, guid: 2c22523432cdec84d88f9dcdc1724f48, type: 2}
+  TargetRange: 1
