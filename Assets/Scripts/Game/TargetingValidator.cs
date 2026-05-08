@@ -26,9 +26,16 @@ public class TargetingValidator
             if (!boardState.UnitsById.TryGetValue(actingUnitId, out BoardUnitState actingUnit)) return false;
             if (actingUnit.Team != card.RequiredActingUnitTeam) return false;
 
-            int distance = Mathf.Abs(actingUnit.Position.x - targetPosition.x) + Mathf.Abs(actingUnit.Position.y - targetPosition.y);
+            int distanceX= Mathf.Abs(actingUnit.Position.x - targetPosition.x);
+            int distanceY= Mathf.Abs(actingUnit.Position.y - targetPosition.y);
+            int distance = distanceX + distanceY;
 
             if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit && distance != 1)
+            {
+                return false;
+            }
+
+            if (card.TargetPattern == CardTargetPattern.DiagonalAdjacentToActingUnit && ! (distanceX== distanceY && distanceX <= card.TargetRange && distanceX > 0)) // makes the unit move left right for tiles above and below the unit, and make the unit move up or down for tiles that are right and left of the unit.
             {
                 return false;
             }

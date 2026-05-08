@@ -18,7 +18,8 @@ public enum CardTargetPattern
 {
     Any,
     CardinalAdjacentToActingUnit,
-    WithinRangeOfActingUnit
+    WithinRangeOfActingUnit,
+    DiagonalAdjacentToActingUnit
 }
 
 public enum CardEffectType
