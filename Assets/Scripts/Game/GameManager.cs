@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform boardOrigin;
     [SerializeField] private float tileSize= 1f;
     [SerializeField] private float projectileHeight=0.5f;
+    
 
     private int placedFriendlyUnits;
     private BoardState setupBoardState;
@@ -63,8 +64,9 @@ public class GameManager : MonoBehaviour
 
         setupBoardState = new BoardState(boardWidth, boardHeight, nextTimelineId, 0);
 
-        PlaceRandomEnemies(setupBoardState, enemiesToSpawn);
         if (randomlyPlaceBase) PlaceRandomBase(setupBoardState);
+        PlaceRandomEnemies(setupBoardState, enemiesToSpawn);
+        
         
 
         CurrentPhase = TurnPhase.PlayerPlacement;
@@ -86,18 +88,43 @@ public class GameManager : MonoBehaviour
         {
             safety++;
 
-            int x = Random.Range(0, boardState.Width);
-            int y = Random.Range(0, boardState.Height);
+            UnitDefinition def = enemyDefinitions[Random.Range(0, enemyDefinitions.Count)];
+
+            if (def == null)
+            {
+                continue;
+            }
+
+            Vector2Int position;
+
+            if (def.EnemyBehavior is BaseEaterBehavior)
+            {
+                position= FarFromBase(boardState);
+
+                if (position.x <0 || position.y < 0)
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                int x = Random.Range(0, boardState.Width);
+                int y = Random.Range(0, boardState.Height);
 
             if (boardState.GetUnitAtTile(x, y) != null)
             {
                 continue;
             }
-
-            UnitDefinition def = enemyDefinitions[Random.Range(0, enemyDefinitions.Count)];
-            Vector2Int position = new Vector2Int(x, y);
+            position= new Vector2Int(x,y);
+            }
+            
+            if (boardState.GetUnitAtTile(position.x,position.y) != null)
+            {
+                continue;
+            }
+            
             BoardUnitState unit = CreateUnit(def, position);
-            boardState.AddUnit(unit, x, y);
+            boardState.AddUnit(unit, position.x, position.y);
 
             placed++;
         }
@@ -372,6 +399,11 @@ public class GameManager : MonoBehaviour
                 BoardUnitState target = state.GetUnitAtTile(position.x, position.y);
 
                 if (target == null)
+                {
+                    continue;
+                }
+
+                if (target.Team != UnitTeam.Friendly) // prevents enemies from attacking other enemies.
                 {
                     continue;
                 }
@@ -858,5 +890,54 @@ public class GameManager : MonoBehaviour
         {
             boardRepresentative.Render(committedBoardState);
         }
+    }
+
+    private Vector2Int FarFromBase(BoardState boardState){// finds the farthest empty tile from the base.
+        BoardUnitState baseUnit= null;
+
+        foreach (var pair in boardState.UnitsById)
+        {
+            BoardUnitState unit= pair.Value;
+
+            if (unit.Team== UnitTeam.Friendly && unit.IsBase && unit.Health > 0)
+            {
+                baseUnit=unit;
+                break;
+            }
+        }
+        if (baseUnit == null)
+        {
+            return new Vector2Int(-1,-1);
+        }
+
+        Vector2Int bestTile= new Vector2Int(-1,-1);
+        int bestDistance=-1;
+
+        for (int x=0; x<boardState.Width; x++)
+        {
+            for(int y=0; y<boardState.Height; y++)
+            {
+                if (boardState.GetUnitAtTile(x,y) != null)
+                {
+                    continue;
+                }
+                int distance= Mathf.Abs(x-baseUnit.Position.x) + Mathf.Abs(y-baseUnit.Position.y);
+
+                if (distance> bestDistance)
+                {
+                    bestDistance= distance;
+                    bestTile= new Vector2Int(x,y);
+                }
+            }
+        }
+        return bestTile;
+    }
+
+    private void SpawnBaseEater(BoardState boardState, UnitDefinition enemyDefinition)
+    {
+        Vector2Int spawnPosition= FarFromBase(boardState);
+
+      BoardUnitState unit= CreateUnit(enemyDefinition, spawnPosition);
+      boardState.AddUnit(unit, spawnPosition.x, spawnPosition.y);
     }
 }

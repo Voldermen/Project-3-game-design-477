@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c78d5d3186a8d024fbd0a876c1e1b408, type: 3}
+  m_Name: BaseEater
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  UnitDefinitionId: base_eater
+  DisplayName: Base Eater
+  Team: 1
+  IsBase: 0
+  MaxHealth: 40
+  ModelPrefab: {fileID: 4685464401743072556, guid: e21666073a3ae954c9f0d0f9d257fc75, type: 3}
+  EnemyBehavior: {fileID: 11400000, guid: 10ddb6ba3637e004b908cff3a13244bc, type: 2}
