@@ -30,7 +30,7 @@ public class TargetingValidator
             int distanceY= Mathf.Abs(actingUnit.Position.y - targetPosition.y);
             int distance = distanceX + distanceY;
 
-            if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit && distance != 1)
+            if (card.TargetPattern == CardTargetPattern.CardinalAdjacentToActingUnit && !((distanceX==0 || distanceY==0)&& distance> 0 && distance<=card.TargetRange))
             {
                 return false;
             }
@@ -45,7 +45,7 @@ public class TargetingValidator
                 return false;
             }
 
-            if (card.TargetPattern== CardTargetPattern.AllAroundActingUnit && !( distanceX <= card.TargetRange && distanceY <= card.TargetRange && distance> 0)) // allows for a card to be played anywhere around the player units.
+            if (card.TargetPattern== CardTargetPattern.AllAroundActingUnit && !( distanceX <= card.TargetRange && distanceY <= card.TargetRange && distance> 0)) // allows for a card to be played anywhere around the player
             {
                 return false;
             }

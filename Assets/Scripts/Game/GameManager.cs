@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int friendlyUnitsToPlace = 3;
     [SerializeField] private bool randomlyPlaceBase = true;
     [SerializeField] private float enemyActionDelay = 0.35f;
+    [SerializeField] private Transform boardOrigin;
+    [SerializeField] private float tileSize= 1f;
+    [SerializeField] private float projectileHeight=0.5f;
 
     private int placedFriendlyUnits;
     private BoardState setupBoardState;
@@ -212,6 +215,15 @@ public class GameManager : MonoBehaviour
             timelineSelectionWidget.Open(this);
         }
     }
+
+    public Vector3 WorldPosition(Vector2Int tilePosition) // this is used for the projectile movement. where it is in the game world.
+    {
+        Vector3 originPoint= boardOrigin != null ? boardOrigin.position : Vector3.zero;
+
+        return originPoint+new Vector3(tilePosition.x* tileSize, projectileHeight, tilePosition.y* tileSize);
+    }
+
+
 
     private Timeline GetRandomPlayableTimeline()
     {
