@@ -338,8 +338,11 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(enemyActionDelay);
 
-        ExecuteTelegraphedEnemyAttacks(workingBoardState);
+       // ExecuteTelegraphedEnemyAttacks(workingBoardState);
+        //boardRepresentative.Render(workingBoardState);
+        yield return EnemyProjectileTelegrphed(workingBoardState);
         boardRepresentative.Render(workingBoardState);
+
 
         yield return new WaitForSeconds(enemyActionDelay);
 
@@ -667,6 +670,7 @@ public class GameManager : MonoBehaviour
 
         BoardState branchedState = targetState.Clone();
         branchedState.TimelineId = newTimelineId;
+        branchedState.EnemyIntents.Clear();
 
         Vector2Int spawnPosition = copiedUnit.Position;
 
@@ -686,6 +690,7 @@ public class GameManager : MonoBehaviour
         }
 
         workingBoardState.RemoveUnit(unitId);
+        workingBoardState.EnemyIntents.Clear();
         TelegraphEnemyAttacks(workingBoardState);
 
         branchedState.AddUnit(copiedUnit, spawnPosition.x, spawnPosition.y);
@@ -939,5 +944,76 @@ public class GameManager : MonoBehaviour
 
       BoardUnitState unit= CreateUnit(enemyDefinition, spawnPosition);
       boardState.AddUnit(unit, spawnPosition.x, spawnPosition.y);
+    }
+
+    private IEnumerator EnemyProjectileTelegrphed(BoardState state) // coroutine for enemy projectiles
+    {
+        for (int i=0; i< state.EnemyIntents.Count; i++)
+        {
+            EnemyIntentState intent= state.EnemyIntents[i];
+
+            if(!state.UnitsById.TryGetValue(intent.EnemyUnitId, out BoardUnitState enemy))
+            {
+                continue;
+            }
+
+            if (enemy.Team != UnitTeam.Enemy || enemy.Health <= 0)
+            {
+                continue;
+            }
+
+            if (intent.IntentType != EnemyIntentType.Damage)
+            {
+                continue;
+            }
+
+            UnitDefinition enemyDefinition= unitDatabase.GetDefinition(enemy.UnitDefinitionId);
+
+            RangedUnitBehavior rangedBehavior=null;
+
+            if ( enemyDefinition != null)
+            {
+                rangedBehavior= enemyDefinition.EnemyBehavior as RangedUnitBehavior;
+            }
+
+            for (int j=0; j< intent.TargetTiles.Count; j++)
+            {
+                Vector2Int position= intent.TargetTiles[j];
+                BoardUnitState target= state.GetUnitAtTile(position.x,position.y);
+
+                if (target == null)
+                {
+                    continue;
+                }
+
+                if (target.Team != UnitTeam.Friendly)
+                {
+                    continue;
+                }
+
+                if (rangedBehavior !=null && rangedBehavior.ProjectilePrefab != null)
+                {
+                    Vector3 startPosition= WorldPosition(enemy.Position);
+                    Vector3 endPosition= WorldPosition(target.Position);
+
+                    ProjectileMovement projectile= Instantiate( rangedBehavior.ProjectilePrefab,startPosition, Quaternion.identity);
+
+                    yield return projectile.MoveTo( startPosition, endPosition, rangedBehavior.projectileSpeed);
+                    Destroy(projectile.gameObject);
+                }
+                if (!state.UnitsById.ContainsKey(target.UnitId)) // if player dies before the enemy attack hits them.
+                {
+                    continue;
+                }
+
+                target.Health -= intent.Damage;
+                if (target.Health <= 0)
+                {
+                    state.RemoveUnit(target.UnitId);
+                }
+                boardRepresentative.Render(state);
+            }
+        }
+        state.EnemyIntents.Clear();
     }
 }
