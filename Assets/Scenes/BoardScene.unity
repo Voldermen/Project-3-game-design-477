@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 1807706430}
     - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: startingDeck.Array.size
-      value: 21
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: 'startingDeck.Array.data[0]'
@@ -1937,6 +1937,10 @@ PrefabInstance:
       propertyPath: 'startingDeck.Array.data[20]'
       value: 
       objectReference: {fileID: 11400000, guid: bac82ad6bb1f5ca43b65e9d8242c3961, type: 2}
+    - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      propertyPath: 'startingDeck.Array.data[21]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 81f4fb4e423ec924bbaf2659fe586ed3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

@@ -200,4 +200,26 @@ public class BoardState
 
         return false;
     }
+
+    public void FriendlyBuffCountdown() // counts down the turns for friendly buffs for buff cards.
+    {
+       foreach (var pair in UnitsById)
+        {
+            BoardUnitState unit= pair.Value;
+            if(unit.Team != UnitTeam.Friendly)
+            {
+                continue;
+            }
+
+            if (unit.strengthTurnsRemaining > 0)
+            {
+                unit.strengthTurnsRemaining--;
+
+                if (unit.strengthTurnsRemaining <= 0)
+                {
+                    unit.strengthUp=0;
+                }
+            }
+        } 
+    }
 }

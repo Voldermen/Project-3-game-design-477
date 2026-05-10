@@ -15,6 +15,8 @@ public class BoardUnitState
     public int Health;
     public int MaxHealth;
     public bool IsBase;
+    public int strengthUp;
+    public int strengthTurnsRemaining; 
 
     public BoardUnitState Clone()
     {
@@ -26,7 +28,9 @@ public class BoardUnitState
             Position = Position,
             Health = Health,
             MaxHealth = MaxHealth,
-            IsBase = IsBase
+            IsBase = IsBase,
+            strengthUp=strengthUp,
+            strengthTurnsRemaining=strengthTurnsRemaining
         };
     }
 }

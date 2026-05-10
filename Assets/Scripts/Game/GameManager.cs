@@ -277,6 +277,7 @@ public class GameManager : MonoBehaviour
 
         BoardState clonedState = committedBoardState.CloneForNextTurn();
 
+        clonedState.FriendlyBuffCountdown(); // starts buff turn countdown.
         workingStatesByTimelineId[activeTimeline.TimelineId] = clonedState;
         workingBoardState = clonedState;
         workingBoardState.RefreshEnergyFromFriendlyUnits();

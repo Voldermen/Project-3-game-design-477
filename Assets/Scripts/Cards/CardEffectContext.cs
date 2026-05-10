@@ -11,11 +11,20 @@ public class CardEffectContext
     public BoardUnitState ActingUnit => BoardState.UnitsById.TryGetValue(ActingUnitId, out BoardUnitState unit) ? unit : null;
     public BoardUnitState TargetUnit => BoardState.GetUnitAtTile(TargetPosition.x, TargetPosition.y);
 
-    public bool DoDamage(BoardUnitState target, int damage)
+    public bool DoDamage(BoardUnitState target, int damage) // adjusted this for the strength buff for any card that uses this helper.
     {
         if (target == null) return false;
 
-        target.Health -= Mathf.Max(0, damage);
+        int finalDamage= Mathf.Max(0, damage);
+
+        BoardUnitState actingUnit= ActingUnit;
+
+        if (actingUnit != null)
+        {
+            finalDamage += Mathf.Max(0, actingUnit.strengthUp);
+        }
+
+        target.Health -= finalDamage;
 
         if (target.Health <= 0)
         {

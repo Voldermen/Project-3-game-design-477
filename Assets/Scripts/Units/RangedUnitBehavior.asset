@@ -15,5 +15,5 @@ MonoBehaviour:
   Damage: 5
   MaxWalkDistance: 2
   rangedAttack: 5
-  ProjectilePrefab: {fileID: 6662138980108969054, guid: 332fef51fdac37843bb23435dcc88e56, type: 3}
+  ProjectilePrefab: {fileID: 6662138980108969054, guid: 3d86c91aff1294740a8b9d4a9045117f, type: 3}
   projectileSpeed: 6
