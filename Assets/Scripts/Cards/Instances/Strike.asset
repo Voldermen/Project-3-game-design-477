@@ -16,7 +16,7 @@ MonoBehaviour:
   DisplayName: Strike
   Cost: 1
   Description: Strike a cardinally adjacent enemy for 6 HP. range 1.
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: df99d296221e1d14ea263bc44255e460, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

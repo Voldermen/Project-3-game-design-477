@@ -17,7 +17,7 @@ MonoBehaviour:
   Cost: 1
   Description: Blast a energy orb at a cardinally adjacent ememy damage 6, range
     5.
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: ef952ba249d79014d9a595e5b1e9f5ec, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

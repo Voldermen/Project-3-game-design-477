@@ -17,7 +17,7 @@ MonoBehaviour:
   Cost: 1
   Description: Attack an enemy either diagonally or cardinally for 4 damage. range
     1
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: 04abd57e98ea25e46868b4b063985bf6, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

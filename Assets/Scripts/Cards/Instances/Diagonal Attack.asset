@@ -16,7 +16,7 @@ MonoBehaviour:
   DisplayName: Diagonal Strike
   Cost: 1
   Description: Strike an Adjacent Diagonal enemy for 8 HP
-  CardImage: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  CardImage: {fileID: 21300000, guid: 70a76eccbc0645c4ebb203c36b75dede, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

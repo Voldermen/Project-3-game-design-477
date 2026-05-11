@@ -16,7 +16,7 @@ MonoBehaviour:
   DisplayName: Heal
   Cost: 1
   Description: Heal Base or friendly unit for 4 HP
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: a8250c748d30fa641b9c80dcd5b9aca1, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 4
