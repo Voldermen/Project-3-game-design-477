@@ -15,6 +15,9 @@ MonoBehaviour:
   CardId: push_1
   DisplayName: Push
   Cost: 2
+  Description: Push a cardinally adjacent enemy a space away from your friendly unit.
+    range 1
+  CardImage: {fileID: 0}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

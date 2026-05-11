@@ -15,6 +15,9 @@ MonoBehaviour:
   CardId: omnidirectional_slash
   DisplayName: 'Omnidirectional Slash '
   Cost: 1
+  Description: Attack an enemy either diagonally or cardinally for 4 damage. range
+    1
+  CardImage: {fileID: 0}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

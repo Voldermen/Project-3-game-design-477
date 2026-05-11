@@ -15,6 +15,8 @@ MonoBehaviour:
   CardId: strength_up
   DisplayName: Strength Up
   Cost: 2
+  Description: 'pick a friendly unit to have +3 attack for 3 turns. '
+  CardImage: {fileID: 0}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 4

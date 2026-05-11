@@ -15,6 +15,8 @@ MonoBehaviour:
   CardId: split_time
   DisplayName: Split Time
   Cost: 1
+  Description: Distort space time and make a new timeline to send a unit into.
+  CardImage: {fileID: 0}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 0

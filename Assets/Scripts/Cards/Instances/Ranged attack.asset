@@ -15,6 +15,9 @@ MonoBehaviour:
   CardId: ranged_attack
   DisplayName: Ranged Attack
   Cost: 1
+  Description: Blast a energy orb at a cardinally adjacent ememy damage 6, range
+    5.
+  CardImage: {fileID: 0}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

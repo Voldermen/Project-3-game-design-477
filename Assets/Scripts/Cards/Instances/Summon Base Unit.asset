@@ -15,6 +15,8 @@ MonoBehaviour:
   CardId: Summon_unit
   DisplayName: Summon Unit
   Cost: 2
+  Description: Summon a friendly unit anywhere on the board.
+  CardImage: {fileID: 0}
   PlayType: 1
   RequiredActingUnitTeam: 0
   TargetType: 2

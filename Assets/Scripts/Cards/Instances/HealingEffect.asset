@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dcc14373d4804543b6c1e5129526a7f, type: 3}
   m_Name: HealingEffect
   m_EditorClassIdentifier: Assembly-CSharp::HealCardEffect
-  Healing: 3
+  Healing: 4
