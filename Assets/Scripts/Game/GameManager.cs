@@ -192,18 +192,43 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    private void BeginCombatFromSetup()
+    private void BeginCombatFromSetup() // new addition: warper makes its own timeline at the start of the battle.
     {
         ResolveOpeningEnemyTurn(setupBoardState);
+        
+        BoardState mainState= setupBoardState.Clone();
+        BoardState warperState= setupBoardState.Clone();
 
-        Timeline timeline = new Timeline(nextTimelineId, 0);
+        bool hasWarper= ThereBeAWarper(warperState);
+
+        if (hasWarper)
+        {
+            RemoveWarpers(mainState);
+            mainState.EnemyIntents.Clear();
+            TelegraphEnemyAttacks(mainState);
+            warperState.EnemyIntents.Clear();
+            TelegraphEnemyAttacks(warperState);
+        }
+
+        Timeline mainTimeline = new Timeline(nextTimelineId, 0);
         nextTimelineId++;
-        timeline.AddState(setupBoardState);
+        
+        mainTimeline.AddState(mainState);
+        timelines.Add(mainTimeline);
 
-        timelines.Add(timeline);
+        if (hasWarper)
+        {
+            Timeline warperTimeline=new Timeline(nextTimelineId,0);
+            nextTimelineId++;
+            warperState.TimelineId= warperTimeline.TimelineId;
+            
 
-        activeTimeline = timeline;
-        committedBoardState = setupBoardState;
+            warperTimeline.AddState(warperState);
+            timelines.Add(warperTimeline);
+        }
+
+        activeTimeline = mainTimeline;
+        committedBoardState = mainState;
         workingBoardState = null;
         setupBoardState = null;
 
@@ -211,6 +236,8 @@ public class GameManager : MonoBehaviour
 
         StartPlayerTimelineSelection();
     }
+
+    
 
     // Draws cards, renders the current committed board, and waits for the player to choose a timeline
     public void StartPlayerTimelineSelection()
@@ -344,11 +371,15 @@ public class GameManager : MonoBehaviour
         yield return EnemyProjectileTelegrphed(workingBoardState);
         boardRepresentative.Render(workingBoardState);
 
+        WarperAttackActiveTimeline(workingBoardState);
+        boardRepresentative.Render(workingBoardState);
+
 
         yield return new WaitForSeconds(enemyActionDelay);
 
         MoveEnemies(workingBoardState);
         boardRepresentative.Render(workingBoardState);
+
 
         yield return new WaitForSeconds(enemyActionDelay);
 
@@ -1017,4 +1048,153 @@ public class GameManager : MonoBehaviour
         }
         state.EnemyIntents.Clear();
     }
+
+    private bool IsWarperInTimeline(BoardUnitState unit)
+    {
+        if(unit== null)
+        {
+            return false;
+        }
+        UnitDefinition definition= unitDatabase.GetDefinition(unit.UnitDefinitionId);
+
+        if (definition == null)
+        {
+            return false;
+        }
+
+        return definition.EnemyBehavior is WarperEnemyBehavior;
+    }
+
+    private void WarperAttackActiveTimeline(BoardState activeState)
+    {
+        if (activeState== null)
+        {
+            return;
+        }
+
+        for (int i=0; i< timelines.Count; i++)
+        {
+            Timeline timeline= timelines[i];
+
+            BoardState WarperState;
+            if (activeTimeline != null && timeline.TimelineId== activeTimeline.TimelineId)
+            {
+                WarperState=workingBoardState;
+            }
+            else
+            {
+                WarperState = timeline.GetLatestState();
+            }
+            if (WarperState == null)
+            {
+                continue;
+            }
+
+            foreach (var pair in WarperState.UnitsById)
+            {
+                BoardUnitState warper= pair.Value;
+
+                if (warper.Team != UnitTeam.Enemy || warper.Health <= 0)
+                {
+                    continue;
+                }
+
+                if (!IsWarperInTimeline(warper))
+                {
+                    continue;
+                }
+
+                UnitDefinition definition = unitDatabase.GetDefinition(warper.UnitDefinitionId);
+                WarperEnemyBehavior behavior= definition.EnemyBehavior as WarperEnemyBehavior;
+
+                if (behavior == null)
+                {
+                    continue;
+                }
+
+                BoardUnitState target= FindNearestFriendlyInRange(activeState, warper.Position, behavior.AttackRange);
+
+                if (target == null)
+                {
+                    continue;
+                }
+
+                target.Health-=behavior.Damage;
+                Debug.Log($"Warper attacked unit {target.UnitId} for {behavior.Damage}");
+
+                if (target.Health <= 0)
+                {
+                    activeState.RemoveUnit(target.UnitId);
+                }
+            }
+        }
+    }
+
+    private BoardUnitState FindNearestFriendlyInRange(BoardState state, Vector2Int origin, int range)
+    {
+        BoardUnitState bestTarget=null;
+        int bestDistance= int.MaxValue;
+
+        foreach (var pair in state.UnitsById)
+        {
+            BoardUnitState unit= pair.Value;
+
+            if(unit.Team != UnitTeam.Friendly)
+            {
+                continue;
+            }
+
+            if (unit.Health <= 0)
+            {
+                continue;
+            }
+
+            int distance=Mathf.Abs(origin.x-unit.Position.x)+Mathf.Abs(origin.y- unit.Position.y);
+
+            if (distance > range)
+            {
+                continue;
+            }
+
+            if (distance < bestDistance)
+            {
+                bestDistance=distance;
+                bestTarget=unit;
+            }
+        }
+        return bestTarget;
+    }
+    private bool ThereBeAWarper(BoardState state)
+    {
+        foreach (var pair in state.UnitsById)
+        {
+            BoardUnitState unit =pair.Value;
+
+            if (unit.Team== UnitTeam.Enemy && unit.Health> 0 && IsWarperInTimeline(unit))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void RemoveWarpers(BoardState state)
+    {
+        List<int> warperIds= new();
+
+        foreach (var pair in state.UnitsById)
+        {
+            BoardUnitState unit = pair.Value;
+
+            if (unit.Team== UnitTeam.Enemy && IsWarperInTimeline(unit))
+            {
+                warperIds.Add(unit.UnitId);
+            }
+        }
+        for (int i=0; i< warperIds.Count; i++)
+        {
+            state.RemoveUnit(warperIds[i]);
+        }
+    }
+
 }

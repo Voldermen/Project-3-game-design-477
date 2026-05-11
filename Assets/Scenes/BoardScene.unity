@@ -903,6 +903,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d41b6dba6c356b547b4535e7b75dc4b0, type: 2}
   - {fileID: 11400000, guid: 2667c9088d9ff50488ea045f702d948d, type: 2}
   - {fileID: 11400000, guid: d6feb1f9bea32e243bfa52aa1faaa573, type: 2}
+  - {fileID: 11400000, guid: 8a6058fa9b93b954ca4485f6a66d2009, type: 2}
 --- !u!4 &536243579
 Transform:
   m_ObjectHideFlags: 0
@@ -1812,7 +1813,7 @@ PrefabInstance:
       objectReference: {fileID: 76687745}
     - target: {fileID: 6666867331565269065, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: enemyDefinitions.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6666867331565269065, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: 'enemyDefinitions.Array.data[0]'
@@ -1830,6 +1831,10 @@ PrefabInstance:
       propertyPath: 'enemyDefinitions.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: d6feb1f9bea32e243bfa52aa1faaa573, type: 2}
+    - target: {fileID: 6666867331565269065, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      propertyPath: 'enemyDefinitions.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 8a6058fa9b93b954ca4485f6a66d2009, type: 2}
     - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: handRoot
       value: 
@@ -2620,6 +2625,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676677229}
   m_CullTransparentMesh: 1
+--- !u!1 &1726590151
+GameObject:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1726590153}
+  - component: {fileID: 1726590152}
+  m_Layer: 0
+  m_Name: 04ff1725-2cfa-41c7-8d83-1c2be3860068
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1726590152
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726590151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -521311792, guid: 355474d781e5561489e3595e39866770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UModelerXCurveCache
+  items: []
+--- !u!4 &1726590153
+Transform:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726590151}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1769301651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2982,51 +3032,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249fb10644829104d897abdb9019b0f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardManager
---- !u!1 &2029701219
-GameObject:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2029701221}
-  - component: {fileID: 2029701220}
-  m_Layer: 0
-  m_Name: 852dbfcb-ee84-469b-97c7-343c8a6074c0
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2029701220
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2029701219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -521311792, guid: 355474d781e5561489e3595e39866770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UModelerXCurveCache
-  items: []
---- !u!4 &2029701221
-Transform:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2029701219}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2038690079
 GameObject:
   m_ObjectHideFlags: 0
@@ -5752,4 +5757,4 @@ SceneRoots:
   - {fileID: 128107019}
   - {fileID: 937847171}
   - {fileID: 793527200}
-  - {fileID: 2029701221}
+  - {fileID: 1726590153}
