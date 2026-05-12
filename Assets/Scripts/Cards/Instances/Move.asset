@@ -16,7 +16,7 @@ MonoBehaviour:
   DisplayName: Move
   Cost: 1
   Description: Move a friendly unit 3 spaces.
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: 3bc514dc075a53048ad98167d7caf02b, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 2

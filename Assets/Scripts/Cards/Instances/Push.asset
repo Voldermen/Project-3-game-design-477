@@ -17,7 +17,7 @@ MonoBehaviour:
   Cost: 2
   Description: Push a cardinally adjacent enemy a space away from your friendly unit.
     range 1
-  CardImage: {fileID: 0}
+  CardImage: {fileID: 21300000, guid: ad8f31c8dc10da2439e97245e33b062a, type: 3}
   PlayType: 0
   RequiredActingUnitTeam: 0
   TargetType: 5

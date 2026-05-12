@@ -1861,7 +1861,7 @@ PrefabInstance:
       objectReference: {fileID: 1807706430}
     - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: startingDeck.Array.size
-      value: 22
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: 'startingDeck.Array.data[0]'
@@ -1951,6 +1951,10 @@ PrefabInstance:
       propertyPath: 'startingDeck.Array.data[21]'
       value: 
       objectReference: {fileID: 11400000, guid: 81f4fb4e423ec924bbaf2659fe586ed3, type: 2}
+    - target: {fileID: 7095010190820522808, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      propertyPath: 'startingDeck.Array.data[22]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 0817cf7eac11b7849a648fb55413201b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2625,51 +2629,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676677229}
   m_CullTransparentMesh: 1
---- !u!1 &1726590151
-GameObject:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1726590153}
-  - component: {fileID: 1726590152}
-  m_Layer: 0
-  m_Name: 04ff1725-2cfa-41c7-8d83-1c2be3860068
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1726590152
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726590151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -521311792, guid: 355474d781e5561489e3595e39866770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UModelerXCurveCache
-  items: []
---- !u!4 &1726590153
-Transform:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726590151}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1769301651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5757,4 +5716,3 @@ SceneRoots:
   - {fileID: 128107019}
   - {fileID: 937847171}
   - {fileID: 793527200}
-  - {fileID: 1726590153}

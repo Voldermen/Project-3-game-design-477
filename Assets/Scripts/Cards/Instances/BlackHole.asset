@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
-  m_Name: Split TIme
+  m_Name: BlackHole
   m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
-  CardId: split_time
-  DisplayName: Split Time
-  Cost: 1
-  Description: Distort space time and make a new timeline to send a unit into.
-  CardImage: {fileID: 21300000, guid: 6a7c6e016d9a87a429a74e88faaf37f6, type: 3}
-  PlayType: 0
+  CardId: blackhole
+  DisplayName: Blackhole
+  Cost: 4
+  Description: Deal 10 to an enemy anywhere on the board.
+  CardImage: {fileID: 21300000, guid: afe867e642cb01248884861d2da0eb0e, type: 3}
+  PlayType: 1
   RequiredActingUnitTeam: 0
-  TargetType: 0
+  TargetType: 5
   TargetPattern: 0
-  CardEffect: {fileID: 11400000, guid: 578001ba79c46ca4289273cc90114919, type: 2}
+  CardEffect: {fileID: 11400000, guid: 1356cf0f1083a784ab64195ab1cde4c6, type: 2}
   TargetRange: 0
