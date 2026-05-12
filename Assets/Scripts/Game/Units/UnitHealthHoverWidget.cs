@@ -13,9 +13,8 @@ public class UnitHealthHoverWidget : MonoBehaviour
 
         if (healthText != null)
         {
-            healthText.text = $"{unitState.Health} / {unitState.MaxHealth}";
+            healthText.text = $"{unitState.Health} / {unitState.MaxHealth}, {unitState.UnitDefinitionId}";
         }
-        Debug.Log($"Showing hover health: {unitState.Health}/{unitState.MaxHealth} at {worldPosition}");
     }
 
     public void Hide()
