@@ -5,6 +5,9 @@ public class Pause : MonoBehaviour
 {
     private bool isPaused= false;
     public GameObject PauseUI;
+    public GameObject ButtonCanvas;
+    public GameObject TimelineUI;
+    public GameObject PileStuff;
 
     private void Start()
     {
@@ -17,6 +20,9 @@ public class Pause : MonoBehaviour
         isPaused=true;
         Time.timeScale=0f;
         PauseUI.SetActive(true);
+        ButtonCanvas.SetActive(false);
+        PileStuff.SetActive(false);
+        TimelineUI.SetActive(false);
        
     }
 
@@ -26,6 +32,9 @@ public class Pause : MonoBehaviour
         Time.timeScale=1f;
         PauseUI.SetActive(false);
         inputedActions.Instance.EnableInput();
+        ButtonCanvas.SetActive(true);
+        PileStuff.SetActive(true);
+        TimelineUI.SetActive(true);
     }
 
     public void Retry()
@@ -34,6 +43,9 @@ public class Pause : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale=1f;
         inputedActions.Instance.DisableInput();
+        ButtonCanvas.SetActive(true);
+        PileStuff.SetActive(true);
+        TimelineUI.SetActive(true);
         
     }
     public void Title()
