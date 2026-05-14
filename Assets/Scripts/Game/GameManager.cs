@@ -56,6 +56,11 @@ public class GameManager : MonoBehaviour
     {
         CurrentPhase = TurnPhase.Setup;
 
+        if (ScoreManager.Instance != null) // resets score.
+        {
+            ScoreManager.Instance.ResetScore();
+        }
+
         timelines.Clear();
 
         nextTimelineId = 0;
@@ -579,6 +584,11 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
+        if (ScoreManager.Instance != null) // this decreases the max card score everytime a card is played.
+        {
+            ScoreManager.Instance.CardUsed();
+        }
+
         TelegraphEnemyAttacks(workingBoardState);
 
         cardManager.DiscardCard(card);
@@ -865,6 +875,10 @@ public class GameManager : MonoBehaviour
     private void WinMatch()
     {
         CurrentPhase = TurnPhase.GameOver;
+        if (ScoreManager.Instance != null) // basaclly sends the final score to the end scene.
+        {
+            ScoreManager.Instance.CalculateFinalScore(this);
+        }
         Debug.Log("Victory");
         SceneManager.LoadScene("Ending");
     }
@@ -1196,5 +1210,43 @@ public class GameManager : MonoBehaviour
             state.RemoveUnit(warperIds[i]);
         }
     }
+    public float GetAverageBaseHP()
+    {
+       
+            if( timelines== null || timelines.Count == 0)
+            {
+                return 0f;
+            }
 
-}
+            int totalBaseHP= 0;
+            int BaseCount=0;
+
+            for (int i=0; i< timelines.Count; i++)
+            {
+                BoardState state = timelines[i].GetLatestState();
+
+                if (state== null)
+                {
+                    continue;
+                }
+
+                foreach( var pair in state.UnitsById)
+                {
+                    BoardUnitState unit= pair.Value;
+
+                    if (unit.Team== UnitTeam.Friendly && unit.IsBase)
+                    {
+                        totalBaseHP += Mathf.Max(0,unit.Health);
+                        BaseCount++;
+                    }
+                }
+            }
+
+            if (BaseCount == 0)
+            {
+                return 0f;
+            }
+            return (float)totalBaseHP/BaseCount;
+        }
+    }
+
