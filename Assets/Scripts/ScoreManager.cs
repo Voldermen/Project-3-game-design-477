@@ -67,4 +67,14 @@ public class ScoreManager : MonoBehaviour
         Debug.Log($"Final Score= BaseHPScore({baseHPScore})+ CardScore({CardScore})= {FinalScore}");
         return FinalScore;
     }
+    public int CalculateScoreGameOver()
+    {
+        
+
+        FinalScore= CardScore;
+
+        Debug.Log($"Game Over your score= BaseHPScore(0)+ CardScore({CardScore})={FinalScore}");
+
+        return FinalScore;
+    }
 }

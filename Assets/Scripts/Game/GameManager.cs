@@ -583,7 +583,8 @@ public class GameManager : MonoBehaviour
             workingBoardState.EnergyState.Refund(card.Cost);
             return false;
         }
-
+        
+        
         if (ScoreManager.Instance != null) // this decreases the max card score everytime a card is played.
         {
             ScoreManager.Instance.CardUsed();
@@ -891,8 +892,15 @@ public class GameManager : MonoBehaviour
     private void LoseMatch()
     {
         CurrentPhase = TurnPhase.GameOver;
+
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.CalculateScoreGameOver();
+        }
         Debug.Log("Defeat");
+        if (gameOver != null){
         gameOver.ShowGameOver();
+        }
     }
 
     private void LogAllUnitHealth(BoardState state, string context) // unit hp indicator 
@@ -1108,11 +1116,18 @@ public class GameManager : MonoBehaviour
             {
                 continue;
             }
-
+            List<BoardUnitState> unitsToCheck=new();
             foreach (var pair in WarperState.UnitsById)
             {
-                BoardUnitState warper= pair.Value;
+                unitsToCheck.Add(pair.Value);
+            }
+                for( int j=0; j< unitsToCheck.Count; j++){
+                    BoardUnitState warper= unitsToCheck[j];
 
+                    if (warper== null)
+                {
+                    continue;
+                }
                 if (warper.Team != UnitTeam.Enemy || warper.Health <= 0)
                 {
                     continue;
@@ -1126,6 +1141,10 @@ public class GameManager : MonoBehaviour
                 UnitDefinition definition = unitDatabase.GetDefinition(warper.UnitDefinitionId);
                 WarperEnemyBehavior behavior= definition.EnemyBehavior as WarperEnemyBehavior;
 
+                if (definition == null)
+                {
+                    continue;
+                }
                 if (behavior == null)
                 {
                     continue;
@@ -1145,7 +1164,7 @@ public class GameManager : MonoBehaviour
                 {
                     activeState.RemoveUnit(target.UnitId);
                 }
-            }
+                }
         }
     }
 

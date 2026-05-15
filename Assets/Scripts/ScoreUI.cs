@@ -9,8 +9,11 @@ public class ScoreUI : MonoBehaviour // this will allow the player to submit the
     [SerializeField] private TMP_Text finalScoreText;
 
     private int finalScore;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnEnable()
+    {
+        RefreshScore();
+    }
+    public void RefreshScore()
     {
        if (ScoreManager.Instance != null)
         {
@@ -29,6 +32,7 @@ public class ScoreUI : MonoBehaviour // this will allow the player to submit the
 
     public void submitScore()
     {
+        RefreshScore();
         string playerName= "Player";
 
         if (playerNameInput !=null && !string.IsNullOrWhiteSpace(playerNameInput.text))
