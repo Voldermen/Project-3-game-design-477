@@ -1251,7 +1251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e5f64f2ad1e744f9f17d3bfa1fe569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
-  startingScore: 1000
+  startingScore: 2000
   cardUsePenalty: 25
   minCardScore: 0
   HPMultiplier: 10

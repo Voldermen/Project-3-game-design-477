@@ -703,6 +703,11 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
+        if (unit.IsBase)
+        {
+            return false;
+        }
+
         int newTimelineId = nextTimelineId;
         nextTimelineId++;
 
