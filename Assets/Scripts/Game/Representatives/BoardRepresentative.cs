@@ -14,6 +14,9 @@ public class BoardRepresentative : MonoBehaviour
     [SerializeField] private Transform dangerRoot;
     [SerializeField] private UnitHealthHoverWidget healthHoverWidget;
     [SerializeField] private float healthHoverHeight = 1.5f;
+    [SerializeField] private CollectibleRepresentative collectiblePrefab;
+    [SerializeField] private Transform collectibleRoot;
+    private readonly List<CollectibleRepresentative> collectibleRepresentatives= new();
 
     private BoardState lastRenderedBoardState;
 
@@ -24,12 +27,14 @@ public class BoardRepresentative : MonoBehaviour
 
     public void Render(BoardState boardState)
     {
+        
         lastRenderedBoardState = boardState;
 
         EnsureTiles(boardState);
         RenderTiles(boardState);
         RenderUnits(boardState);
         RenderDangerTiles(boardState);
+        RenderCollectibles(boardState);
     }
 
     private void RenderDangerTiles(BoardState state)
@@ -208,5 +213,41 @@ public class BoardRepresentative : MonoBehaviour
         {
             Destroy(root.GetChild(i).gameObject);
         }
+    }
+
+    private void RenderCollectibles(BoardState state)
+    {
+        ClearCollectibles();
+
+        if (collectiblePrefab== null || collectibleRoot== null)
+        {
+            return;
+        }
+
+        for (int i=0; i< state.Collectibles.Count; i++)
+        {
+            BoardCollectibleState collectible= state.Collectibles[i];
+
+            CollectibleRepresentative rep= Instantiate( collectiblePrefab,collectibleRoot);
+            rep.transform.localPosition= GridToWorld(collectible.Position.x, collectible.Position.y) + Vector3.up * 1f;
+            rep.Render(collectible);
+
+            collectibleRepresentatives.Add(rep);
+
+            Debug.Log($"Rendering {state.Collectibles.Count} collectibles. Prefab= {collectiblePrefab}, Root={collectibleRoot}");
+            Debug.Log($"Spawned collectible visual at {rep.transform.localPosition}");
+        }
+    }
+
+    private void ClearCollectibles()
+    {
+        for (int i= collectibleRepresentatives.Count -1; i >=0; i--)
+        {
+            if (collectibleRepresentatives[i] != null)
+            {
+                Destroy(collectibleRepresentatives[i].gameObject);
+            }
+        }
+        collectibleRepresentatives.Clear();
     }
 }

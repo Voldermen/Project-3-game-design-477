@@ -8,6 +8,7 @@ public class ScoreManager : MonoBehaviour
    [SerializeField] private int startingScore=1000;
    [SerializeField] private int cardUsePenalty= 25;
    [SerializeField] private int minCardScore=0;
+   [SerializeField] private int gameOverPenalty= 1000;
 
    [Header("Base HP Average Score ")]
    [SerializeField] private int HPMultiplier= 10; // makes the score look larger.
@@ -15,6 +16,7 @@ public class ScoreManager : MonoBehaviour
 
    public int CardScore { get; private set;}
    public int FinalScore {get; private set;}
+   public int CollectibleScore{get; private set;}
 
    private void Awake()
     {
@@ -33,6 +35,7 @@ public class ScoreManager : MonoBehaviour
     {
         CardScore= startingScore;
         FinalScore= 0;
+        CollectibleScore=0;
     }
 
 
@@ -63,18 +66,24 @@ public class ScoreManager : MonoBehaviour
     public int CalculateFinalScore(GameManager gameManager)
     {
         int baseHPScore= CalculateBaseHPScore(gameManager);
-        FinalScore= baseHPScore + CardScore;
-        Debug.Log($"Final Score= BaseHPScore({baseHPScore})+ CardScore({CardScore})= {FinalScore}");
+        FinalScore= baseHPScore + CardScore+ CollectibleScore;
+        Debug.Log($"Final Score= BaseHPScore({baseHPScore})+ CardScore({CardScore}) + CollectibleScore({CollectibleScore})= {FinalScore}");
         return FinalScore;
     }
     public int CalculateScoreGameOver()
     {
-        
+        int penalizedCardScore= Mathf.Max(0,CardScore- gameOverPenalty);
 
-        FinalScore= CardScore;
+        FinalScore= penalizedCardScore+ CollectibleScore;
 
-        Debug.Log($"Game Over your score= BaseHPScore(0)+ CardScore({CardScore})={FinalScore}");
+        Debug.Log($"Game Over your score= BaseHPScore(0)+ CardScore({penalizedCardScore})+ CollectibleScore({CollectibleScore})={FinalScore}");
 
         return FinalScore;
+    }
+
+    public void AddCollectibleScore(int amount)
+    {
+        CollectibleScore += Mathf.Max(0, amount);
+        Debug.Log($"CollectibleScore is now {CollectibleScore}");
     }
 }

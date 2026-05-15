@@ -389,51 +389,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318036893}
   m_CullTransparentMesh: 1
---- !u!1 &384309396
-GameObject:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 384309398}
-  - component: {fileID: 384309397}
-  m_Layer: 0
-  m_Name: ca4df464-414c-42d5-af72-702060e4a030
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &384309397
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384309396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -521311792, guid: 355474d781e5561489e3595e39866770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UModelerXCurveCache
-  items: []
---- !u!4 &384309398
-Transform:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384309396}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &523900768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,7 +963,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Time Traveling Chess
+  m_text: 'Worlds Apart
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1473,51 +1430,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1725959349
-GameObject:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1725959351}
-  - component: {fileID: 1725959350}
-  m_Layer: 0
-  m_Name: 0cfcba6a-19d9-4147-8c67-9fd0ed98d8f3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1725959350
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1725959349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -521311792, guid: 355474d781e5561489e3595e39866770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Tripolygon.UModelerX.Runtime.dll::Tripolygon.UModelerX.Runtime.UModelerXCurveCache
-  items: []
---- !u!4 &1725959351
-Transform:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1725959349}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1964681488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,5 +1744,3 @@ SceneRoots:
   - {fileID: 827346950}
   - {fileID: 1521155377}
   - {fileID: 1872105982753060812}
-  - {fileID: 1725959351}
-  - {fileID: 384309398}

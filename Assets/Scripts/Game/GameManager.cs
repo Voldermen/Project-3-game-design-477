@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform boardOrigin;
     [SerializeField] private float tileSize= 1f;
     [SerializeField] private float projectileHeight=0.5f;
+    [SerializeField] private int CollectibleScoreValue =100;
+    [SerializeField] private int collectiblesPerTimeline= 4;
+    [SerializeField] private bool spawnCollectibles=true;
+    private int nextCollectibleId;
     
 
     private int placedFriendlyUnits;
@@ -54,6 +58,7 @@ public class GameManager : MonoBehaviour
     // Called when a GameManager is made, creates a startingstate and sets up the timelines
     public void StartMatch()
     {
+        nextCollectibleId=0;
         CurrentPhase = TurnPhase.Setup;
 
         if (ScoreManager.Instance != null) // resets score.
@@ -233,11 +238,16 @@ public class GameManager : MonoBehaviour
         }
 
         activeTimeline = mainTimeline;
-        committedBoardState = mainState;
         workingBoardState = null;
         setupBoardState = null;
+         if (spawnCollectibles)
+        {
+            SpawnCollectiblesOnAllTimelines();
+        }
 
+        committedBoardState= mainTimeline.GetLatestState();
         boardRepresentative.Render(committedBoardState);
+       
 
         StartPlayerTimelineSelection();
     }
@@ -583,6 +593,8 @@ public class GameManager : MonoBehaviour
             workingBoardState.EnergyState.Refund(card.Cost);
             return false;
         }
+
+        CheckCollectiblePickup(workingBoardState);
         
         
         if (ScoreManager.Instance != null) // this decreases the max card score everytime a card is played.
@@ -610,7 +622,14 @@ public class GameManager : MonoBehaviour
 
         bool moved = workingBoardState.MoveUnit(unitId, x, y);
 
-        if (moved) boardRepresentative.Render(workingBoardState);
+        if (moved)
+        {
+            if(workingBoardState.UnitsById.TryGetValue(unitId, out BoardUnitState unit))
+            {
+                CollectiblePickup(workingBoardState, unit);
+            }
+            boardRepresentative.Render(workingBoardState);
+        }
         return moved;
     }
 
@@ -1272,5 +1291,109 @@ public class GameManager : MonoBehaviour
             }
             return (float)totalBaseHP/BaseCount;
         }
+        private void SpawnCollectiblesOnAllTimelines()
+    {
+        for (int i=0; i<timelines.Count; i++){
+        Timeline timeline= timelines[i];
+        BoardState state= timeline.GetLatestState();
+        if (state== null)
+            {
+                continue;
+            }
+            for (int j=0; j< collectiblesPerTimeline; j++)
+            {
+                SpawnCollectibleOnRandomEmptyTile(state);
+            }
+        }
+    }
+
+    private void SpawnCollectibleOnRandomEmptyTile(BoardState state)
+    {
+        if (state == null)
+        {
+            return;
+        }
+        int safety=0;
+
+        while (safety< 1000)
+        {
+            safety++;
+
+            int x= Random.Range(0, state.Width);
+            int y= Random.Range(0, state.Height);
+
+            if (state.GetUnitAtTile(x,y) != null)
+            {
+                continue;
+            }
+
+            if(state.GetCollectibleAtTile(x,y) != null)
+            {
+                continue;
+            }
+
+            BoardCollectibleState collectible= new BoardCollectibleState
+            {
+                CollectibleId= nextCollectibleId++,
+                Position= new Vector2Int(x,y),
+                ScoreValue= CollectibleScoreValue
+            };
+
+            state.AddCollectible(collectible);
+
+            Debug.Log($"Spawned collectible at {collectible.Position} on timeline {state.TimelineId}");
+            return;
+        }
+        Debug.LogWarning("Failed to spawn collectible");
+    }
+
+    private void CollectiblePickup(BoardState state, BoardUnitState unit)
+    {
+        if (state == null || unit == null)
+        {
+            return;
+        }
+        if (unit.Team != UnitTeam.Friendly)
+        {
+            return;
+        }
+        BoardCollectibleState collectible= state.GetCollectibleAtTile(unit.Position.x,unit.Position.y);
+
+        if(collectible == null)
+        {
+            return;
+        }
+
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.AddCollectibleScore(collectible.ScoreValue);
+        }
+
+        state.RemoveCollectible(collectible.CollectibleId);
+
+        Debug.Log($"Friendly unit {unit.UnitId} picked up collectible for {collectible.ScoreValue} points");
+    }
+    public void CheckCollectiblePickup(BoardState state) // checks collectibles after cards are played.
+    {
+       if (state == null)
+        {
+            return;
+        } 
+        List<BoardUnitState> friendlyUnits= new();
+
+        foreach(var pair in state.UnitsById)
+        {
+            BoardUnitState unit = pair.Value;
+
+            if (unit.Team== UnitTeam.Friendly && unit.Health > 0)
+            {
+                friendlyUnits.Add(unit);
+            }
+        }
+        for (int i= 0; i< friendlyUnits.Count; i++)
+        {
+            CollectiblePickup(state,friendlyUnits[i]);
+        }
+    } 
     }
 

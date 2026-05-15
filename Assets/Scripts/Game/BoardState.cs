@@ -17,6 +17,8 @@ public class BoardState
     public int Width => Tiles.GetLength(0);
     public int Height => Tiles.GetLength(1);
 
+    public List<BoardCollectibleState> Collectibles= new();
+
     public BoardState(int width, int height, int timelineId, int turnCount)
     {
         TimelineId = timelineId;
@@ -59,6 +61,11 @@ public class BoardState
         for (int i = 0; i < EnemyIntents.Count; i++)
         {
             clone.EnemyIntents.Add(EnemyIntents[i].Clone());
+        }
+        clone.Collectibles= new List<BoardCollectibleState>();
+        for (int i=0; i < Collectibles.Count; i++)
+        {
+            clone.Collectibles.Add(Collectibles[i].Clone());
         }
 
         clone.EnergyState = EnergyState.Clone();
@@ -221,5 +228,49 @@ public class BoardState
                 }
             }
         } 
+    }
+
+    public BoardCollectibleState GetCollectibleAtTile(int x, int y)
+    {
+        for (int i=0; i < Collectibles.Count; i++)
+        {
+            BoardCollectibleState collectible= Collectibles[i];
+
+            if (collectible.Position.x== x && collectible.Position.y == y)
+            {
+                return collectible;
+            }
+        }
+        return null;
+    }
+
+    public void AddCollectible(BoardCollectibleState collectible)
+    {
+        if (collectible== null)
+        {
+            return;
+        }
+        if (!IsInsideBoard(collectible.Position.x, collectible.Position.y))
+        {
+            return;
+        }
+
+        if ( GetCollectibleAtTile(collectible.Position.x, collectible.Position.y)!= null)
+        {
+            return;
+        }
+        Collectibles.Add(collectible);
+    }
+    public bool RemoveCollectible(int collectibleId)
+    {
+        for (int i=0; i< Collectibles.Count; i++)
+        {
+            if (Collectibles[i].CollectibleId== collectibleId)
+            {
+                Collectibles.RemoveAt(i);
+                return true;
+            }
+        }
+        return false;
     }
 }
