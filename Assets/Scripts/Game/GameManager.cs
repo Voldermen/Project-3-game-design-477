@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<UnitDefinition> enemyDefinitions;
     [SerializeField] private UnitDatabase unitDatabase;
     [SerializeField] private TimelineSelectionWidget timelineSelectionWidget;
+    private bool isSelectingSplitTimeTarget;
+    private int pendingSplitTimeUnitId = -1;
 
     [SerializeField] private int boardWidth = 8;
     [SerializeField] private int boardHeight = 8;
@@ -771,6 +773,160 @@ public class GameManager : MonoBehaviour
         DebugTimelines();
 
         return true;
+    }
+
+    public bool BeginSplitTimeSelection(int unitId)
+    {
+        if (CurrentPhase != TurnPhase.PlayerTurn) return false;
+        if (workingBoardState == null) return false;
+
+        if (!workingBoardState.UnitsById.TryGetValue(unitId, out BoardUnitState unit))
+        {
+            return false;
+        }
+
+        if (unit.IsBase)
+        {
+            return false;
+        }
+
+        isSelectingSplitTimeTarget = true;
+        pendingSplitTimeUnitId = unitId;
+
+        if (timelineSelectionWidget != null)
+        {
+            timelineSelectionWidget.OpenForSplitTime(this);
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool ResolveSplitTimeSelection(int targetTimelineId, int targetStateIndex)
+    {
+        if (!isSelectingSplitTimeTarget) return false;
+        if (workingBoardState == null) return false;
+
+        if (!workingBoardState.UnitsById.TryGetValue(pendingSplitTimeUnitId, out BoardUnitState unit))
+        {
+            ClearSplitTimeSelection();
+            return false;
+        }
+
+        Timeline targetTimeline = GetTimeline(targetTimelineId);
+
+        if (targetTimeline == null)
+        {
+            return false;
+        }
+
+        BoardState selectedState = targetTimeline.GetStateAtIndex(targetStateIndex);
+
+        if (selectedState == null)
+        {
+            return false;
+        }
+
+        if (unit.IsBase)
+        {
+            return false;
+        }
+
+        BoardUnitState copiedUnit = unit.Clone();
+        copiedUnit.UnitId = nextUnitId++;
+        copiedUnit.Position = unit.Position;
+
+        bool targetIsRightmost = IsRightmostTimelineState(targetTimelineId, targetStateIndex);
+
+        workingBoardState.RemoveUnit(unit.UnitId);
+        workingBoardState.EnemyIntents.Clear();
+        TelegraphEnemyAttacks(workingBoardState);
+
+        if (targetIsRightmost)
+        {
+            BoardState continuedState = selectedState.CloneForNextTurn();
+            continuedState.TimelineId = targetTimeline.TimelineId;
+
+            if (!PlaceCopiedUnitIntoState(continuedState, copiedUnit))
+            {
+                ClearSplitTimeSelection();
+                return false;
+            }
+
+            TelegraphEnemyAttacks(continuedState);
+            targetTimeline.AddState(continuedState);
+
+            if (activeTimeline != null && activeTimeline.TimelineId == targetTimeline.TimelineId)
+            {
+                committedBoardState = targetTimeline.GetLatestState();
+            }
+
+            Debug.Log($"Split Time continued Timeline={targetTimeline.TimelineId} from StateIndex={targetStateIndex}");
+        }
+        else
+        {
+            int newTimelineId = nextTimelineId;
+            nextTimelineId++;
+
+            BoardState branchedState = selectedState.Clone();
+            branchedState.TimelineId = newTimelineId;
+            branchedState.EnemyIntents.Clear();
+
+            if (!PlaceCopiedUnitIntoState(branchedState, copiedUnit))
+            {
+                ClearSplitTimeSelection();
+                return false;
+            }
+
+            TelegraphEnemyAttacks(branchedState);
+
+            Timeline newTimeline = new Timeline(newTimelineId, branchedState.TurnCount);
+            newTimeline.AddState(branchedState);
+            timelines.Add(newTimeline);
+
+            Debug.Log($"Split Time created Timeline={newTimelineId} from Timeline={targetTimelineId}, StateIndex={targetStateIndex}");
+        }
+
+        ClearSplitTimeSelection();
+
+        if (timelineSelectionWidget != null)
+        {
+            timelineSelectionWidget.Hide();
+        }
+
+        boardRepresentative.Render(workingBoardState);
+        DebugTimelines();
+
+        return true;
+    }
+
+    private bool PlaceCopiedUnitIntoState(BoardState state, BoardUnitState copiedUnit)
+    {
+        Vector2Int spawnPosition = copiedUnit.Position;
+
+        if (!state.IsInsideBoard(spawnPosition.x, spawnPosition.y))
+        {
+            return false;
+        }
+
+        if (state.GetUnitAtTile(spawnPosition.x, spawnPosition.y) != null)
+        {
+            spawnPosition = FindNearestEmptyTile(state, spawnPosition);
+
+            if (spawnPosition.x < 0)
+            {
+                return false;
+            }
+        }
+
+        state.AddUnit(copiedUnit, spawnPosition.x, spawnPosition.y);
+        return true;
+    }
+
+    private void ClearSplitTimeSelection()
+    {
+        isSelectingSplitTimeTarget = false;
+        pendingSplitTimeUnitId = -1;
     }
 
     private Vector2Int FindNearestEmptyTile(BoardState state, Vector2Int origin)

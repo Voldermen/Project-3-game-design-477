@@ -2,6 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum TimelineSelectionMode
+{
+    StartTurn,
+    SplitTime
+}
+
 public class TimelineSelectionWidget : MonoBehaviour
 {
     [SerializeField] private GameObject root;
@@ -11,6 +17,7 @@ public class TimelineSelectionWidget : MonoBehaviour
     [SerializeField] private GameObject previewRoot;
     [SerializeField] private Button startTurnButton;
     [SerializeField] private Button backButton;
+    private TimelineSelectionMode mode = TimelineSelectionMode.StartTurn;
 
     private GameManager gameManager;
     private readonly List<TimelineSelectionRow> activeRows = new();
@@ -37,6 +44,23 @@ public class TimelineSelectionWidget : MonoBehaviour
     public void Open(GameManager newGameManager)
     {
         gameManager = newGameManager;
+        mode = TimelineSelectionMode.StartTurn;
+        selectedTimelineId = -1;
+        selectedStateIndex = -1;
+
+        if (root != null)
+        {
+            root.SetActive(true);
+        }
+
+        ShowGraph();
+        RenderGraph();
+    }
+
+    public void OpenForSplitTime(GameManager newGameManager)
+    {
+        gameManager = newGameManager;
+        mode = TimelineSelectionMode.SplitTime;
         selectedTimelineId = -1;
         selectedStateIndex = -1;
 
@@ -83,6 +107,12 @@ public class TimelineSelectionWidget : MonoBehaviour
         if (state == null)
         {
             Debug.LogError("Selected timeline state was null.");
+            return;
+        }
+
+        if (mode == TimelineSelectionMode.SplitTime)
+        {
+            gameManager.ResolveSplitTimeSelection(timelineId, stateIndex);
             return;
         }
 

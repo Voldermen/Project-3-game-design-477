@@ -10,9 +10,6 @@ public class SendUnitBackCardEffect : CardEffect
             return false;
         }
 
-        int targetTurn = context.BoardState.TurnCount - 1;
-        
-        
-        return context.GameManager.SendUnitToTurn(context.ActingUnit.UnitId, targetTurn);
-        }
+        return context.GameManager.BeginSplitTimeSelection(context.ActingUnit.UnitId);
     }
+}
