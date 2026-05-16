@@ -466,6 +466,8 @@ public class GameManager : MonoBehaviour
                 {
                     state.RemoveUnit(target.UnitId);
                 }
+
+                boardRepresentative.Render(state);
             }
         }
 
@@ -800,6 +802,19 @@ public class GameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void RefreshBoardVisuals()
+    {
+        if (workingBoardState != null)
+        {
+            boardRepresentative.Render(workingBoardState);
+        }
+
+        if (energyWidget != null && workingBoardState != null)
+        {
+            energyWidget.Refresh(workingBoardState.EnergyState);
+        }
     }
 
     public bool ResolveSplitTimeSelection(int targetTimelineId, int targetStateIndex)

@@ -11,13 +11,13 @@ public class CardEffectContext
     public BoardUnitState ActingUnit => BoardState.UnitsById.TryGetValue(ActingUnitId, out BoardUnitState unit) ? unit : null;
     public BoardUnitState TargetUnit => BoardState.GetUnitAtTile(TargetPosition.x, TargetPosition.y);
 
-    public bool DoDamage(BoardUnitState target, int damage) // adjusted this for the strength buff for any card that uses this helper.
+    public bool DoDamage(BoardUnitState target, int damage)
     {
         if (target == null) return false;
 
-        int finalDamage= Mathf.Max(0, damage);
+        int finalDamage = Mathf.Max(0, damage);
 
-        BoardUnitState actingUnit= ActingUnit;
+        BoardUnitState actingUnit = ActingUnit;
 
         if (actingUnit != null)
         {
@@ -31,6 +31,8 @@ public class CardEffectContext
             BoardState.RemoveUnit(target.UnitId);
         }
 
+        GameManager?.RefreshBoardVisuals();
+
         return true;
     }
 
@@ -39,6 +41,9 @@ public class CardEffectContext
         if (target == null) return false;
 
         target.Health = Mathf.Min(target.MaxHealth, target.Health + Mathf.Max(0, healing));
+
+        GameManager?.RefreshBoardVisuals();
+
         return true;
     }
 
@@ -46,7 +51,14 @@ public class CardEffectContext
     {
         if (target == null) return false;
 
-        return BoardState.MoveUnit(target.UnitId, destination.x, destination.y);
+        bool moved = BoardState.MoveUnit(target.UnitId, destination.x, destination.y);
+
+        if (moved)
+        {
+            GameManager?.RefreshBoardVisuals();
+        }
+
+        return moved;
     }
 
     public bool DoDamageAt(Vector2Int position, int damage)
