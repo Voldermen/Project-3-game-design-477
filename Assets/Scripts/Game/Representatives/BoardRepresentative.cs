@@ -16,6 +16,10 @@ public class BoardRepresentative : MonoBehaviour
     [SerializeField] private float healthHoverHeight = 1.5f;
     [SerializeField] private CollectibleRepresentative collectiblePrefab;
     [SerializeField] private Transform collectibleRoot;
+
+    private bool IsHoverTile;
+    private int HoverTileX;
+    private int HoverTileY;
     private readonly List<CollectibleRepresentative> collectibleRepresentatives= new();
 
     private BoardState lastRenderedBoardState;
@@ -35,6 +39,7 @@ public class BoardRepresentative : MonoBehaviour
         RenderUnits(boardState);
         RenderDangerTiles(boardState);
         RenderCollectibles(boardState);
+        RefeshHoveredHealth();
     }
 
     private void RenderDangerTiles(BoardState state)
@@ -170,11 +175,16 @@ public class BoardRepresentative : MonoBehaviour
 
     public void OnTileHovered(TileRepresentative tile)
     {
+
+        IsHoverTile=true;
+        HoverTileX= tile.X;
+        HoverTileY= tile.Y;
+
         if (selectionController != null)
         {
             selectionController.HoverTile(tile.X, tile.Y);
         }
-
+        RefeshHoveredHealth();
         if (healthHoverWidget == null || lastRenderedBoardState == null)
         {
             return;
@@ -196,6 +206,7 @@ public class BoardRepresentative : MonoBehaviour
 
     public void ClearHoveredTile()
     {
+        IsHoverTile=false;
         if (healthHoverWidget != null)
         {
             healthHoverWidget.Hide();
@@ -249,5 +260,30 @@ public class BoardRepresentative : MonoBehaviour
             }
         }
         collectibleRepresentatives.Clear();
+    }
+
+    private void RefeshHoveredHealth()
+    {
+        if (!IsHoverTile)
+        {
+            return;
+        }
+
+        if (healthHoverWidget == null || lastRenderedBoardState == null)
+        {
+            return;
+        }
+
+        BoardUnitState unit= lastRenderedBoardState.GetUnitAtTile(HoverTileX, HoverTileY);
+
+        if (unit == null)
+        {
+            healthHoverWidget.Hide();
+            return;
+        }
+
+        Vector3 localPosition= GridToWorld(unit.Position.x, unit.Position.y) + Vector3.up* healthHoverHeight;
+        Vector3 worldPosition= transform.TransformPoint(localPosition);
+        healthHoverWidget.Show(unit, worldPosition);
     }
 }

@@ -29,6 +29,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int CollectibleScoreValue =100;
     [SerializeField] private int collectiblesPerTimeline= 4;
     [SerializeField] private bool spawnCollectibles=true;
+    [Header("Player UI")]
+    [SerializeField] private GameObject playerButtonsRoot;
+    [SerializeField] private GameObject pileRoot;
+    [SerializeField] private CanvasGroup handCanvasGroup;
     private int nextCollectibleId;
     
 
@@ -264,6 +268,7 @@ public class GameManager : MonoBehaviour
         workingBoardState = null;
 
         cardManager.DrawHand(5);
+        SetPlayerUIVisible(false, false);
 
         if (energyWidget != null)
         {
@@ -328,6 +333,7 @@ public class GameManager : MonoBehaviour
         if (energyWidget != null) energyWidget.Show(workingBoardState.EnergyState);
 
         CurrentPhase = TurnPhase.PlayerTurn;
+        SetPlayerUIVisible(true, true);
 
         boardRepresentative.Render(workingBoardState);
 
@@ -406,6 +412,11 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(enemyActionDelay);
 
         CommitWorkingBoardState();
+        if (ShouldLose(workingBoardState))
+        {
+            LoseMatch();
+            yield break;
+        }
         StartPlayerTimelineSelection();
     }
 
@@ -589,7 +600,7 @@ public class GameManager : MonoBehaviour
         if (workingBoardState == null || card == null) return false;
 
         if (!workingBoardState.EnergyState.TrySpend(card.Cost)) return false;
-
+        int timelineCountBeforeCard= timelines.Count;
         bool resolved = cardResolver.ResolveCard(card, workingBoardState, actingUnitId, targetPosition, this);
 
         if (!resolved)
@@ -614,6 +625,19 @@ public class GameManager : MonoBehaviour
         if (energyWidget != null)
         {
             energyWidget.Refresh(workingBoardState.EnergyState);
+        }
+
+        if (timelines.Count > timelineCountBeforeCard)
+        {
+            CommitWorkingBoardState();
+            TimelineSelectionWhenSplit();
+            return true;
+            
+        }
+
+        if (CheckWin())
+        {
+            return true;
         }
 
         return true;
@@ -794,7 +818,11 @@ public class GameManager : MonoBehaviour
 
         isSelectingSplitTimeTarget = true;
         pendingSplitTimeUnitId = unitId;
-
+        SetPlayerUIVisible(false, false); // Hides cards and buttons when choosing a timeline split.
+        if (energyWidget!= null)
+        {
+            energyWidget.Hide();
+        }
         if (timelineSelectionWidget != null)
         {
             timelineSelectionWidget.OpenForSplitTime(this);
@@ -907,6 +935,16 @@ public class GameManager : MonoBehaviour
         if (timelineSelectionWidget != null)
         {
             timelineSelectionWidget.Hide();
+        }
+
+        CurrentPhase= TurnPhase.PlayerTurn;
+
+        SetPlayerUIVisible(true,true);
+
+        if(energyWidget != null && workingBoardState != null)
+        {
+            energyWidget.Show(workingBoardState.EnergyState);
+            energyWidget.Refresh(workingBoardState.EnergyState);
         }
 
         boardRepresentative.Render(workingBoardState);
@@ -1566,5 +1604,78 @@ public class GameManager : MonoBehaviour
             CollectiblePickup(state,friendlyUnits[i]);
         }
     } 
+
+    public void RefreshBoard(BoardState state)
+    {
+        if (state==null || boardRepresentative== null)
+        {
+            return;
+        }
+
+        boardRepresentative.Render(state);
+    }
+
+    private void SetPlayerUIVisible(bool visible, bool cardsInteractable)
+    {
+        if (playerButtonsRoot != null)
+        {
+            playerButtonsRoot.SetActive(visible && cardsInteractable);
+        }
+
+        if (pileRoot != null)
+        {
+            pileRoot.SetActive(visible);
+        }
+
+        if (handCanvasGroup != null)
+        {
+            handCanvasGroup.alpha= visible ? 1f : 0f;
+            handCanvasGroup.interactable= visible && cardsInteractable;
+            handCanvasGroup.blocksRaycasts= visible && cardsInteractable;
+        }
+    }
+
+    public void ShowTimelinePreviewUI()
+    {
+        SetPlayerUIVisible(true,false);
+    }
+
+    public void HideTimelinePreviewUI()
+    {
+        SetPlayerUIVisible(false, false);
+    }
+
+    private bool CheckWin() // if player wins they will not have to press end turn to win.
+    {
+        if ( workingBoardState== null)
+        {
+            return false;
+        }
+
+        if (ShouldWin(workingBoardState))
+        {
+            CommitWorkingBoardState();
+            WinMatch();
+            return true;
+        }
+        return false;
+    }
+
+    private void TimelineSelectionWhenSplit()
+    {
+        CurrentPhase= TurnPhase.TimelineSelection;
+        workingBoardState=null;
+
+        if(energyWidget != null)
+        {
+            energyWidget.Hide();
+        }
+        SetPlayerUIVisible(false, false);
+
+        if (timelineSelectionWidget != null)
+        {
+            timelineSelectionWidget.Open(this);
+        }
+    }
     }
 

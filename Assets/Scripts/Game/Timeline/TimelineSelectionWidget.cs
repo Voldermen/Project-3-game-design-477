@@ -119,6 +119,7 @@ public class TimelineSelectionWidget : MonoBehaviour
         Debug.Log($"Previewing state: turn={state.TurnCount}, timeline={state.TimelineId}, units={state.UnitsById.Count}");
 
         gameManager.PreviewTimelineState(state);
+        gameManager.ShowTimelinePreviewUI(); // lets the player see their hand of cards while selecting timelines.
 
         graphRoot.SetActive(false);
         previewRoot.SetActive(true);
@@ -144,6 +145,7 @@ public class TimelineSelectionWidget : MonoBehaviour
     private void BackToGraph()
     {
         ShowGraph();
+        gameManager.HideTimelinePreviewUI();
         gameManager.RenderCommittedBoard();
     }
 

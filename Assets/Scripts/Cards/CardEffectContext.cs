@@ -31,7 +31,10 @@ public class CardEffectContext
             BoardState.RemoveUnit(target.UnitId);
         }
 
-        GameManager?.RefreshBoardVisuals();
+        if (GameManager != null)
+        {
+            GameManager.RefreshBoard(BoardState);
+        }
 
         return true;
     }
@@ -42,7 +45,10 @@ public class CardEffectContext
 
         target.Health = Mathf.Min(target.MaxHealth, target.Health + Mathf.Max(0, healing));
 
-        GameManager?.RefreshBoardVisuals();
+        if (GameManager != null)
+        {
+            GameManager.RefreshBoard(BoardState);
+        }
 
         return true;
     }
@@ -53,9 +59,9 @@ public class CardEffectContext
 
         bool moved = BoardState.MoveUnit(target.UnitId, destination.x, destination.y);
 
-        if (moved)
+        if (moved && GameManager != null)
         {
-            GameManager?.RefreshBoardVisuals();
+            GameManager.RefreshBoard(BoardState);
         }
 
         return moved;

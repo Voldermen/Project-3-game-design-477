@@ -43,9 +43,7 @@ public class Pause : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale=1f;
         inputedActions.Instance.DisableInput();
-        ButtonCanvas.SetActive(true);
-        PileStuff.SetActive(true);
-        TimelineUI.SetActive(true);
+        
         
     }
     public void Title()
