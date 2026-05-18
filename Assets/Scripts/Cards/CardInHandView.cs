@@ -9,6 +9,7 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private TMP_Text costText;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private Image cardImage;
+    [SerializeField] private Camera boardCamera;
 
     private CardDefinition card;
     private SelectionController selectionController;
@@ -59,25 +60,66 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        bool draggedOutOfHand = eventData.position.y > Screen.height * 0.5f;
+       TileRepresentative tile= GetTileUnderMouse(eventData.position);
 
-        if (!draggedOutOfHand)
+       if (tile != null && selectionController != null)
         {
-            ReturnToHand();
-            return;
-        }
+            BoardState state= selectionController.GetWorkingBoardState();
+        
 
-        if (!selectionController.TryBeginCard(card))
-        {
-            ReturnToHand();
-            return;
-        }
+        
+            if (state != null)
+            {
+                BoardUnitState unit= state.GetUnitAtTile(tile.X, tile.Y);
 
-        gameObject.SetActive(false);
+                if (card.PlayType== CardPlayType.Global)
+                {
+                    bool played= selectionController.TryPlayCardOnTile(card, tile.X, tile.Y);
+
+                    if (played)
+                    {
+                        gameObject.SetActive(false);
+                        return;
+                    }
+                }
+                if (unit != null && unit.Team== UnitTeam.Friendly)
+                {
+                    bool beganCard= selectionController.TryBeginCardFromUnitDrop(card, unit.UnitId, this);
+                    if (beganCard)
+                    {
+                        gameObject.SetActive(false);
+                        return;
+                    }
+                }
+            }
+        
+        }
+        ReturnToHand();
     }
 
-    private void ReturnToHand()
+    public void ReturnToHand()
     {
         rectTransform.anchoredPosition = startAnchoredPosition;
+        gameObject.SetActive(true);
     }
+
+    private TileRepresentative GetTileUnderMouse(Vector2 screenPosition)
+    {
+        Camera cameraToUse= boardCamera !=null ? boardCamera : Camera.main;
+
+        if (cameraToUse== null)
+        {
+            return null;
+        }
+
+        Ray ray =cameraToUse.ScreenPointToRay(screenPosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            return hit.collider.GetComponentInParent<TileRepresentative>();
+        }
+        return null;
+    }
+
+    
 }
