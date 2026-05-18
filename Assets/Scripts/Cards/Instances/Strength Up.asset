@@ -17,7 +17,7 @@ MonoBehaviour:
   Cost: 2
   Description: 'pick a friendly unit to have +3 attack for 3 turns. '
   CardImage: {fileID: 21300000, guid: bf610943ba68e6843bbe483ca9b8c185, type: 3}
-  PlayType: 0
+  PlayType: 1
   RequiredActingUnitTeam: 0
   TargetType: 4
   TargetPattern: 0
