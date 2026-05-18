@@ -16,7 +16,8 @@ public class BoardUnitState
     public int MaxHealth;
     public bool IsBase;
     public int strengthUp;
-    public int strengthTurnsRemaining; 
+    public int strengthTurnsRemaining;
+    public Vector2Int FacingDirection = Vector2Int.down;
 
     public BoardUnitState Clone()
     {
@@ -29,8 +30,9 @@ public class BoardUnitState
             Health = Health,
             MaxHealth = MaxHealth,
             IsBase = IsBase,
-            strengthUp=strengthUp,
-            strengthTurnsRemaining=strengthTurnsRemaining
+            FacingDirection = FacingDirection,
+            strengthUp = strengthUp,
+            strengthTurnsRemaining = strengthTurnsRemaining,
         };
     }
 }

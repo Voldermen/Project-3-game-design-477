@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardUnitRepresentative
   modelRoot: {fileID: 1374105008460561905}
+  modelYawOffset: 180

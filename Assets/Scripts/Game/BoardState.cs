@@ -142,21 +142,43 @@ public class BoardState
     }
 
     // Tries to move the given unit to the given position
-    public bool MoveUnit(int unitId, int newX, int newY)
+    public bool MoveUnit(int unitId, int x, int y)
     {
-        // Buncha checks before we move
-        if (!UnitsById.TryGetValue(unitId, out BoardUnitState unit)) return false;
+        if (!UnitsById.TryGetValue(unitId, out BoardUnitState unit))
+        {
+            return false;
+        }
 
-        BoardTileState oldTile = GetTile(unit.Position.x, unit.Position.y);
-        BoardTileState newTile = GetTile(newX, newY);
-        if (oldTile == null || newTile == null) return false;
+        if (!IsInsideBoard(x, y))
+        {
+            return false;
+        }
 
-        if (newTile.OccupyingUnitId != -1) return false; // DO NOT move a unit to an occupied space
+        if (Tiles[x, y].OccupyingUnitId != -1)
+        {
+            return false;
+        }
 
-        // Update OccupyingUnitId's and set the unit's position
-        oldTile.OccupyingUnitId = -1;
-        newTile.OccupyingUnitId = unitId;
-        unit.Position = new Vector2Int(newX, newY);
+        Vector2Int oldPosition = unit.Position;
+        Vector2Int newPosition = new Vector2Int(x, y);
+        Vector2Int delta = newPosition - oldPosition;
+
+        if (delta != Vector2Int.zero)
+        {
+            if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
+            {
+                unit.FacingDirection = delta.x > 0 ? Vector2Int.right : Vector2Int.left;
+            }
+            else
+            {
+                unit.FacingDirection = delta.y > 0 ? Vector2Int.up : Vector2Int.down;
+            }
+        }
+
+        Tiles[oldPosition.x, oldPosition.y].OccupyingUnitId = -1;
+        Tiles[x, y].OccupyingUnitId = unitId;
+
+        unit.Position = newPosition;
 
         return true;
     }
