@@ -335,8 +335,8 @@ public class GameManager : MonoBehaviour
         CurrentPhase = TurnPhase.PlayerTurn;
         SetPlayerUIVisible(true, true);
 
-        boardRepresentative.Render(workingBoardState);
-
+        
+        RenderBoardWithWarperGhosts(workingBoardState);
         return true;
     }
 
@@ -639,7 +639,7 @@ public class GameManager : MonoBehaviour
         {
             return true;
         }
-
+        RenderBoardWithWarperGhosts(workingBoardState);
         return true;
     }
 
@@ -658,6 +658,7 @@ public class GameManager : MonoBehaviour
             }
             boardRepresentative.Render(workingBoardState);
         }
+        RenderBoardWithWarperGhosts(workingBoardState);
         return moved;
     }
 
@@ -1172,8 +1173,13 @@ public class GameManager : MonoBehaviour
 
     public void PreviewTimelineState(BoardState state)
     {
+        if (state == null)
+        {
+            return;
+        }
         Debug.Log($"GameManager preview state: turn={state.TurnCount}, timeline={state.TimelineId}, units={state.UnitsById.Count}");
-        boardRepresentative.Render(state.Clone());
+        RenderBoardWithWarperGhosts(workingBoardState);
+        
     }
 
     public void RenderCommittedBoard()
@@ -1611,8 +1617,8 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
-        boardRepresentative.Render(state);
+        RenderBoardWithWarperGhosts(workingBoardState);
+        
     }
 
     private void SetPlayerUIVisible(bool visible, bool cardsInteractable)
@@ -1677,5 +1683,95 @@ public class GameManager : MonoBehaviour
             timelineSelectionWidget.Open(this);
         }
     }
+
+        private List<WarperGhostVisualState> GetWarperGhostsForVisibleTimeline(BoardState visibleState)
+{
+    List<WarperGhostVisualState> ghosts = new();
+
+    if (visibleState == null)
+    {
+        return ghosts;
+    }
+
+    for (int i = 0; i < timelines.Count; i++)
+    {
+        Timeline timeline = timelines[i];
+
+        
+        if (timeline.TimelineId == visibleState.TimelineId)// doesn't make a ghost for Warpers already in the visible timeline.
+        {
+            continue;
+        }
+
+        BoardState warperState = timeline.GetLatestState();
+
+        if (warperState == null)
+        {
+            continue;
+        }
+
+        foreach (var pair in warperState.UnitsById)
+        {
+            BoardUnitState possibleWarper = pair.Value;
+
+            if (possibleWarper.Team != UnitTeam.Enemy || possibleWarper.Health <= 0)
+            {
+                continue;
+            }
+
+            if (!IsWarperInTimeline(possibleWarper))
+            {
+                continue;
+            }
+
+            UnitDefinition definition = unitDatabase.GetDefinition(possibleWarper.UnitDefinitionId);
+
+            if (definition == null)
+            {
+                continue;
+            }
+
+            WarperEnemyBehavior behavior = definition.EnemyBehavior as WarperEnemyBehavior;
+
+            if (behavior == null)
+            {
+                continue;
+            }
+
+            WarperGhostVisualState ghost = new WarperGhostVisualState
+            {
+                UnitDefinitionId = possibleWarper.UnitDefinitionId,
+                Position = possibleWarper.Position
+            };
+
+            BoardUnitState target = FindNearestFriendlyInRange(
+                visibleState,
+                possibleWarper.Position,
+                behavior.AttackRange
+            );
+
+            if (target != null)
+            {
+                ghost.TargetTiles.Add(target.Position);
+            }
+
+            ghosts.Add(ghost);
+        }
+    }
+
+    return ghosts;
+}
+private void RenderBoardWithWarperGhosts(BoardState state)
+{
+    if (boardRepresentative == null || state==null)
+    {
+        return;
+    }
+
+    boardRepresentative.Render(state);
+
+    List<WarperGhostVisualState> ghosts = GetWarperGhostsForVisibleTimeline(state);
+    boardRepresentative.RenderWarperGhosts(ghosts, unitDatabase);
+}
     }
 

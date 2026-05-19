@@ -16,7 +16,10 @@ public class BoardRepresentative : MonoBehaviour
     [SerializeField] private float healthHoverHeight = 1.5f;
     [SerializeField] private CollectibleRepresentative collectiblePrefab;
     [SerializeField] private Transform collectibleRoot;
+    [SerializeField] private WarperGhostRepresentative warperGhostPrefab;
+    [SerializeField] private Transform warperGhostRoot;
 
+    private readonly List<WarperGhostRepresentative> warperGhostRepresentatives = new();
     private bool IsHoverTile;
     private int HoverTileX;
     private int HoverTileY;
@@ -286,4 +289,58 @@ public class BoardRepresentative : MonoBehaviour
         Vector3 worldPosition= transform.TransformPoint(localPosition);
         healthHoverWidget.Show(unit, worldPosition);
     }
+    public void RenderWarperGhosts(List<WarperGhostVisualState> ghosts, UnitDatabase unitDatabase)
+{
+    ClearWarperGhosts();
+
+    if (ghosts == null)
+    {
+        return;
+    }
+
+    if (warperGhostPrefab == null || warperGhostRoot == null)
+    {
+        return;
+    }
+
+    for (int i = 0; i < ghosts.Count; i++)
+    {
+        WarperGhostVisualState ghost = ghosts[i];
+
+        WarperGhostRepresentative rep = Instantiate(warperGhostPrefab, warperGhostRoot);
+        rep.transform.localPosition = GridToWorld(ghost.Position.x, ghost.Position.y);
+
+        rep.Render(ghost, unitDatabase);
+
+        warperGhostRepresentatives.Add(rep);
+
+        
+        if (dangerPrefab != null && dangerRoot != null) // adds danger tiles for the ghost Warper.
+        {
+            for (int j = 0; j < ghost.TargetTiles.Count; j++)
+            {
+                Vector2Int tile = ghost.TargetTiles[j];
+
+                DangerTileRepresentative danger = Instantiate(dangerPrefab, dangerRoot);
+                danger.transform.localPosition = GridToWorld(tile.x, tile.y);
+
+                dangerTiles.Add(danger);
+            }
+        }
+    }
+}
+
+private void ClearWarperGhosts()
+{
+    for (int i = warperGhostRepresentatives.Count - 1; i >= 0; i--)
+    {
+        if (warperGhostRepresentatives[i] != null)
+        {
+            Destroy(warperGhostRepresentatives[i].gameObject);
+        }
+    }
+
+    warperGhostRepresentatives.Clear();
+}
+
 }

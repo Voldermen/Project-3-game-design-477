@@ -1723,6 +1723,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1576037162}
     - target: {fileID: 2586800113064332682, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      propertyPath: warperGhostRoot
+      value: 
+      objectReference: {fileID: 2029856645}
+    - target: {fileID: 2586800113064332682, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: collectiblePrefab
       value: 
       objectReference: {fileID: 2802686396460149819, guid: 7e3f02e5bb3a0854f985359538a2e530, type: 3}
@@ -1730,6 +1734,10 @@ PrefabInstance:
       propertyPath: healthHoverWidget
       value: 
       objectReference: {fileID: 937847174}
+    - target: {fileID: 2586800113064332682, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      propertyPath: warperGhostPrefab
+      value: 
+      objectReference: {fileID: 1374910562296745587, guid: d8ccd5c8fd4c4204abc535e7aa83e031, type: 3}
     - target: {fileID: 2586800113064332682, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       propertyPath: selectionController
       value: 
@@ -1953,6 +1961,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9031096013090435891, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1576037162}
+    - targetCorrespondingSourceObject: {fileID: 9031096013090435891, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2029856645}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb746cdb1d20aa442944d1423c6ad8cf, type: 3}
 --- !u!114 &1066889176 stripped
@@ -2870,6 +2881,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249fb10644829104d897abdb9019b0f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardManager
+--- !u!1 &2029856644
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2029856645}
+  m_Layer: 0
+  m_Name: WarperGhostRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2029856645
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029856644}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1929079185}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2035489513
 PrefabInstance:
   m_ObjectHideFlags: 0
