@@ -116,6 +116,13 @@ public class SelectionController : MonoBehaviour
 
         Vector2Int targetPosition= new Vector2Int(x,y);
 
+        BoardUnitState targetUnit= boardState.GetUnitAtTile(x,y);
+
+        if (targetUnit != null && targetUnit.IsBase && !IsHealCard(card))
+        {
+            return false;
+        }
+
         int actingUnitId= card.PlayType == CardPlayType.Global ? -1 : SelectedUnitId;
 
         if (!targetingValidator.CanBeginCard(card, boardState, actingUnitId))
@@ -152,6 +159,11 @@ public class SelectionController : MonoBehaviour
         }
 
         if (unit.Team != UnitTeam.Friendly)
+        {
+            return false;
+        }
+
+        if (unit.IsBase && !IsHealCard(card))
         {
             return false;
         }
@@ -211,5 +223,10 @@ public class SelectionController : MonoBehaviour
         cancelCardButton.alpha= show ? 1f : 0f;
         cancelCardButton.interactable= show;
         cancelCardButton.blocksRaycasts= show;
+    }
+
+    private bool IsHealCard(CardDefinition card)
+    {
+       return card != null && card.CardEffect is HealCardEffect;
     }
 }
