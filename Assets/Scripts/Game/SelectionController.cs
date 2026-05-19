@@ -3,7 +3,7 @@ using UnityEngine;
 public class SelectionController : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private GameObject cancelCardButton;
+    [SerializeField] private CanvasGroup cancelCardButton;
 
     public int SelectedUnitId = -1;
     public CardDefinition SelectedCard;
@@ -201,9 +201,15 @@ public class SelectionController : MonoBehaviour
 
     private void RefreshCancelButton()
     {
-        if (cancelCardButton != null)
+        if (cancelCardButton == null)
         {
-            cancelCardButton.SetActive(SelectedCard!=null);
+            return;
         }
+
+        bool show= SelectedCard != null;
+
+        cancelCardButton.alpha= show ? 1f : 0f;
+        cancelCardButton.interactable= show;
+        cancelCardButton.blocksRaycasts= show;
     }
 }

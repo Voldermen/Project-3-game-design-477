@@ -389,6 +389,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318036893}
   m_CullTransparentMesh: 1
+--- !u!1 &425956304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 425956307}
+  - component: {fileID: 425956306}
+  - component: {fileID: 425956305}
+  m_Layer: 0
+  m_Name: MenuStuff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &425956305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425956304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e5f64f2ad1e744f9f17d3bfa1fe569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
+  startingScore: 2000
+  cardUsePenalty: 25
+  minCardScore: 0
+  gameOverPenalty: 1000
+  HPMultiplier: 10
+--- !u!114 &425956306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425956304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c6453c1649e5514d883ef7c014b50ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InitalizeGame
+--- !u!4 &425956307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425956304}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1776.5979, y: 710.4903, z: -524.16785}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &523900768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1057,8 +1119,6 @@ GameObject:
   - component: {fileID: 1142651236}
   - component: {fileID: 1142651235}
   - component: {fileID: 1142651239}
-  - component: {fileID: 1142651238}
-  - component: {fileID: 1142651240}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1140,18 +1200,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1142651238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142651234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c6453c1649e5514d883ef7c014b50ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InitalizeGame
 --- !u!114 &1142651239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1196,22 +1244,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &1142651240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1142651234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e5f64f2ad1e744f9f17d3bfa1fe569, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
-  startingScore: 2000
-  cardUsePenalty: 25
-  minCardScore: 0
-  HPMultiplier: 10
 --- !u!1 &1168447359
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,3 +1776,4 @@ SceneRoots:
   - {fileID: 827346950}
   - {fileID: 1521155377}
   - {fileID: 1872105982753060812}
+  - {fileID: 425956307}

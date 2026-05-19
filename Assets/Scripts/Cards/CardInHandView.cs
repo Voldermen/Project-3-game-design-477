@@ -50,12 +50,50 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (rectTransform == null)
+        {
+            rectTransform=GetComponent<RectTransform>();
+        }
+
+        if (canvas == null)
+        {
+            canvas= GetComponentInParent<Canvas>();
+        }
+
+        if (rectTransform != null){
         startAnchoredPosition = rectTransform.anchoredPosition;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+
+        if (rectTransform == null)
+        {
+            rectTransform=GetComponent<RectTransform>();
+        }
+
+        if (canvas== null)
+        {
+            canvas = GetComponentInParent<Canvas>();
+        }
+
+        if (rectTransform == null)
+        {
+            Debug.LogError("CardInHandView has no RectTransform.");
+            return;
+        }
+        float scaleFactor=1f;
+        if (canvas != null)
+        {
+            scaleFactor=canvas.scaleFactor;
+        }
+        else
+        {
+            Debug.LogWarning("CardInHandView could not find parent Canvas");
+        }
+        
+        rectTransform.anchoredPosition += eventData.delta / scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -99,7 +137,16 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
     public void ReturnToHand()
     {
-        rectTransform.anchoredPosition = startAnchoredPosition;
+        if (rectTransform == null)
+        {
+            rectTransform= GetComponent<RectTransform>();
+        }
+
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = startAnchoredPosition;
+        }
+        
         gameObject.SetActive(true);
     }
 
