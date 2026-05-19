@@ -29,6 +29,34 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2943576683157085486, guid: 054d47a25f1677047a0d604727bec216, type: 3}
+      propertyPath: m_text
+      value: '- Chaser: 26 HP moves 3 spaces a turn, and can attack your base or
+        friendly units if they are cardinally adjacent to it for 6 damage.
+
+
+        -
+        Ranged unit: 18 HP moves 2 spaces a turn and targets your player units. it
+        can attack 5 tiles in all cardinal directions for 5 damage.
+
+
+        -Healer:
+        20HP can move 2 spaces a turn and targets damaged enemy units if it gets
+        cardinally adjacent to a damaged unit it will heal them 4 HP a turn.
+
+
+        -
+        Base Eater: 40 HP only targets the base moves 1 space a turn and it will
+        do 10 damage every turn it is cardinally adjacent to you base.
+
+
+        -
+        Warper: 23 HP moves 2 spaces a turn and can target 2 spaces in any cardinal
+        direction. At the begining of the game it will create it''s own timeline
+        and it will attack your friendly units and base in the timeline you are playing
+        in for 5 damage. You can see it''s blue out line from your active timeline
+        when the warper is in another timeline.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2943576683157085486, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_fontSize
       value: 12
       objectReference: {fileID: 0}
@@ -42,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3248233592561127486, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -78
+      value: 4.4
       objectReference: {fileID: 0}
     - target: {fileID: 3330165019310248511, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -66,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4878694125129893309, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -138
+      value: -68.3
       objectReference: {fileID: 0}
     - target: {fileID: 5242744899122100173, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_Name
@@ -115,6 +143,12 @@ PrefabInstance:
     - target: {fileID: 6824844560927078880, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6945215006128266323, guid: 054d47a25f1677047a0d604727bec216, type: 3}
+      propertyPath: m_text
+      value: 'Guide
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 6945215006128266323, guid: 054d47a25f1677047a0d604727bec216, type: 3}
       propertyPath: m_fontSize
@@ -229,7 +263,9 @@ PrefabInstance:
       value: 61
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7953354753720474301, guid: 054d47a25f1677047a0d604727bec216, type: 3}
+    - {fileID: 3902562390896014610, guid: 054d47a25f1677047a0d604727bec216, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 054d47a25f1677047a0d604727bec216, type: 3}

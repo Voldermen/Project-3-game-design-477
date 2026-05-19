@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerButtonsRoot;
     [SerializeField] private GameObject pileRoot;
     [SerializeField] private CanvasGroup handCanvasGroup;
+    [SerializeField] private TutorialSequenceUI tutorialSequenceUI;
+    [SerializeField] private bool showTutorialOnStart = true;
     private int nextCollectibleId;
     
 
@@ -56,9 +58,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        StartMatch();
+
+        if (showTutorialOnStart && tutorialSequenceUI != null)
+        {
+            tutorialSequenceUI.Open(StartMatch);
+        }
+        else
+        {
+            StartMatch();
+        }
     }
 
     // Called when a GameManager is made, creates a startingstate and sets up the timelines
