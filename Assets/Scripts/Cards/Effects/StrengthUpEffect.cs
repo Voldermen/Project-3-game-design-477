@@ -22,6 +22,11 @@ public class StrengthUpEffect : CardEffect
 
         targetUnit.strengthUp += IncreaseStrength;
         targetUnit.strengthTurnsRemaining=Mathf.Max(targetUnit.strengthTurnsRemaining,TurnDuration);
+
+        if (context.GameManager != null)
+        {
+            context.GameManager.RefreshBoard(context.BoardState);
+        }
         return true;
     }
 }
