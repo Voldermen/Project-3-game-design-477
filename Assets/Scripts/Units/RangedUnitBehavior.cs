@@ -6,22 +6,24 @@ public class RangedUnitBehavior : EnemyBehavior
 {
     public int Damage = 5;
     public int MaxWalkDistance = 2;
-    public int rangedAttack=5;
+    public int rangedAttack = 5;
 
     [Header("Projectile")]
     public ProjectileMovement ProjectilePrefab;
-    public float projectileSpeed=6f;
+    public float projectileSpeed = 6f;
 
     public override void Move(BoardState state, BoardUnitState enemy)
     {
-        BoardUnitState targetInRange = FindNearestFriendlyUnitInRange (state, enemy);
+        BoardUnitState targetInRange = FindNearestFriendlyUnitInRange(state, enemy);
 
         if (targetInRange != null)
         {
+            FaceTarget(enemy, targetInRange.Position);
             return;
         }
 
-        BoardUnitState target=FindNearestFriendlyUnit(state,enemy);
+        BoardUnitState target = FindNearestFriendlyUnit(state, enemy);
+
         if (target == null)
         {
             return;
@@ -92,10 +94,23 @@ public class RangedUnitBehavior : EnemyBehavior
         {
             state.MoveUnit(enemy.UnitId, bestPosition.x, bestPosition.y);
         }
+        else
+        {
+            FaceTarget(enemy, target.Position);
+        }
     }
 
     public override EnemyIntentState CreateIntent(BoardState state, BoardUnitState enemy)
     {
+        BoardUnitState target = FindNearestFriendlyUnitInRange(state, enemy);
+
+        if (target == null)
+        {
+            return null;
+        }
+
+        FaceTarget(enemy, target.Position);
+
         EnemyIntentState intent = new EnemyIntentState
         {
             EnemyUnitId = enemy.UnitId,
@@ -103,60 +118,60 @@ public class RangedUnitBehavior : EnemyBehavior
             Damage = Damage
         };
 
-        BoardUnitState target= FindNearestFriendlyUnitInRange(state,enemy);
+        intent.TargetTiles.Add(target.Position);
 
-        if (target != null)
-        {
-            intent.TargetTiles.Add(target.Position);
-        }
         return intent;
-
     }
+
     private BoardUnitState FindNearestFriendlyUnitInRange(BoardState state, BoardUnitState enemy)
     {
-        BoardUnitState optimalTarget= null;
-        int optimalDistance= int.MaxValue;
+        BoardUnitState optimalTarget = null;
+        int optimalDistance = int.MaxValue;
 
         foreach (var pair in state.UnitsById)
         {
-            BoardUnitState unit= pair.Value;
+            BoardUnitState unit = pair.Value;
 
             if (unit.Team != UnitTeam.Friendly)
             {
                 continue;
             }
+
             if (unit.IsBase)
             {
                 continue;
             }
-            if ( unit.Health <= 0)
+
+            if (unit.Health <= 0)
             {
                 continue;
             }
+
             if (!IsInCardinalRange(enemy.Position, unit.Position))
             {
                 continue;
             }
 
-            int distance= GetDistance(enemy.Position, unit.Position);
+            int distance = GetDistance(enemy.Position, unit.Position);
 
             if (distance < optimalDistance)
             {
-                optimalDistance=distance;
-                optimalTarget=unit;
+                optimalDistance = distance;
+                optimalTarget = unit;
             }
         }
+
         return optimalTarget;
     }
 
     private BoardUnitState FindNearestFriendlyUnit(BoardState state, BoardUnitState enemy)
     {
-        BoardUnitState optimalTarget= null;
-        int optimalDistance=int.MaxValue;
+        BoardUnitState optimalTarget = null;
+        int optimalDistance = int.MaxValue;
 
         foreach (var pair in state.UnitsById)
         {
-            BoardUnitState unit= pair.Value;
+            BoardUnitState unit = pair.Value;
 
             if (unit.Team != UnitTeam.Friendly)
             {
@@ -168,36 +183,56 @@ public class RangedUnitBehavior : EnemyBehavior
                 continue;
             }
 
-            if(unit.Health <= 0)
+            if (unit.Health <= 0)
             {
                 continue;
             }
 
-            int distance= GetDistance(enemy.Position, unit.Position);
+            int distance = GetDistance(enemy.Position, unit.Position);
 
             if (distance < optimalDistance)
             {
-                optimalDistance= distance;
-                optimalTarget= unit;
+                optimalDistance = distance;
+                optimalTarget = unit;
             }
         }
+
         return optimalTarget;
     }
 
     private bool IsInCardinalRange(Vector2Int enemyPosition, Vector2Int targetPosition)
     {
-        int xDistance= Mathf.Abs(enemyPosition.x - targetPosition.x);
-        int yDistance= Mathf.Abs(enemyPosition.y- targetPosition.y);
-        int distance= xDistance+ yDistance;
+        int xDistance = Mathf.Abs(enemyPosition.x - targetPosition.x);
+        int yDistance = Mathf.Abs(enemyPosition.y - targetPosition.y);
+        int distance = xDistance + yDistance;
 
-        bool column=xDistance==0;
-        bool row= yDistance==0;
+        bool column = xDistance == 0;
+        bool row = yDistance == 0;
 
-        return (column || row) && distance>0 && distance<= rangedAttack;
+        return (column || row) && distance > 0 && distance <= rangedAttack;
+    }
+
+    private void FaceTarget(BoardUnitState enemy, Vector2Int targetPosition)
+    {
+        Vector2Int delta = targetPosition - enemy.Position;
+
+        if (delta == Vector2Int.zero)
+        {
+            return;
+        }
+
+        if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
+        {
+            enemy.FacingDirection = delta.x > 0 ? Vector2Int.right : Vector2Int.left;
+        }
+        else
+        {
+            enemy.FacingDirection = delta.y > 0 ? Vector2Int.up : Vector2Int.down;
+        }
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)
     {
-        return Mathf.Abs(a.x- b.x)+ Mathf.Abs(a.y- b.y);
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 }
