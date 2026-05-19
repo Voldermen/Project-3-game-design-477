@@ -16,6 +16,9 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private RectTransform rectTransform;
     private Canvas canvas;
     private Vector2 startAnchoredPosition;
+    private RectTransform canvasRectTransform;
+    private RectTransform parentRectTransform;
+    private Vector2 dragOffset;
 
     public void Initialize(CardDefinition newCard, SelectionController newSelectionController)
     {
@@ -23,6 +26,11 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         selectionController = newSelectionController;
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+
+        if (canvas != null)
+        {
+            canvasRectTransform=canvas.GetComponent<RectTransform>();
+        }
 
         if (cardNameText != null)
         {
@@ -55,19 +63,36 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             rectTransform=GetComponent<RectTransform>();
         }
 
-        if (canvas == null)
+        if (canvas== null)
         {
-            canvas= GetComponentInParent<Canvas>();
+            canvas = GetComponentInParent<Canvas>();
         }
 
-        if (rectTransform != null){
-        startAnchoredPosition = rectTransform.anchoredPosition;
+       parentRectTransform= rectTransform.parent as RectTransform;
+
+       if (rectTransform== null || parentRectTransform == null)
+        {
+            return;
         }
+        startAnchoredPosition= rectTransform.anchoredPosition;
+        Camera UICamera= null;
+        
+        if(canvas !=null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+        {
+            UICamera=canvas.worldCamera;
+        }
+
+        Vector2 mouseLocalPoint;
+
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, UICamera, out mouseLocalPoint))
+        {
+            dragOffset=rectTransform.anchoredPosition-mouseLocalPoint;
+        }
+        rectTransform.SetAsLastSibling();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-
         if (rectTransform == null)
         {
             rectTransform=GetComponent<RectTransform>();
@@ -75,25 +100,31 @@ public class CardInHandView : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         if (canvas== null)
         {
-            canvas = GetComponentInParent<Canvas>();
+            canvas= GetComponentInParent<Canvas>();
+        }
+        if (parentRectTransform== null && rectTransform != null)
+        {
+            parentRectTransform= rectTransform.parent as RectTransform;
         }
 
-        if (rectTransform == null)
+        if (rectTransform == null || parentRectTransform == null)
         {
-            Debug.LogError("CardInHandView has no RectTransform.");
             return;
         }
-        float scaleFactor=1f;
-        if (canvas != null)
+        Camera UICamera= null;
+
+        if (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
         {
-            scaleFactor=canvas.scaleFactor;
+            UICamera= canvas.worldCamera;
         }
-        else
+
+        Vector2 mouseLocalPoint;
+
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRectTransform, eventData.position, UICamera, out mouseLocalPoint))
         {
-            Debug.LogWarning("CardInHandView could not find parent Canvas");
+            rectTransform.anchoredPosition= mouseLocalPoint+ dragOffset;
         }
         
-        rectTransform.anchoredPosition += eventData.delta / scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
