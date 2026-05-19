@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 458c4d86bbe02e9448bfca980b204619, type: 3}
   m_Name: HealingCard
   m_EditorClassIdentifier: Assembly-CSharp::CardDefinition
-  CardId: heal_unit
+  CardId: heal
   DisplayName: Heal
   Cost: 1
   Description: Heal Base or friendly unit for 4 HP
