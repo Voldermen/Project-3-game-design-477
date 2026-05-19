@@ -17,5 +17,5 @@ MonoBehaviour:
   Team: 1
   IsBase: 0
   MaxHealth: 26
-  ModelPrefab: {fileID: 919132149155446097, guid: 26c9d7e357f526340a7b986a52899fbd, type: 3}
+  ModelPrefab: {fileID: 6449878539005273420, guid: fccb1fc79e5e26149be863f544c4be6d, type: 3}
   EnemyBehavior: {fileID: 11400000, guid: 766a6b458250a814b8205aed8d5a75b5, type: 2}
